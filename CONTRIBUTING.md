@@ -1,6 +1,6 @@
 This file contains instructions for developers.
 
-Note that this application is based on our [cookiecutter webapp deluxe template](https://github.com/UUDigitalHumanitieslab/cookiecutter-webapp-deluxe); the instructions below come from the general repository.
+Note that this application is based on our [cookiecutter webapp deluxe template](https://github.com/CentreForDigitalHumanities/cookiecutter-webapp-deluxe); the instructions below come from the general repository.
 
 However, unlike most of our applications, digital ATLAS works without a backend or database: all necessary data is included in the frontend. The Django backend is still included because that allows the application to run in our normal deployment configuration. Keep this in mind when consulting the documentation below.
 
