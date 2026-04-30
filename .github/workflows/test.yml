@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.12']
-        node-version: ['12.x']
+        node-version: ['22.x']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -41,6 +41,5 @@ jobs:
         yarn
         yarn static-p
         find static
-        yarn start-back-p &
         chromedriver --version
         yarn test

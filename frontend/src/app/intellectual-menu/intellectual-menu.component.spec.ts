@@ -15,7 +15,8 @@ describe('IntellectualMenuComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: new BehaviorSubject({ id: 1 })
+            params: new BehaviorSubject({ id: 1 }),
+            snapshot: { url: '/' },
           }
         }],
     })
