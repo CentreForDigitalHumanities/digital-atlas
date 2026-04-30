@@ -2,19 +2,14 @@
     "name": "digital-atlas",
     "scripts": {
         "start": "yarn serve",
-        "build": "./download-images.sh && yarn build:colors && ng build --deploy-url='/static/'",
-        "test": "yarn build:colors && ng test --watch=true",
-        "lint": "ng lint",
+        "ng": "node --openssl-legacy-provider ./node_modules/@angular/cli/bin/ng",
+        "build": "./download-images.sh && yarn build:colors && yarn ng build --deploy-url='/static/'",
+        "test": "yarn build:colors && yarn ng test",
+        "lint": "yarn ng lint",
         "build:colors": "cd src && node build-colors.js",
-        "build:en": "yarn build:colors && ng build  --deploy-url='/static/' --configuration=production-en",
-        "build:nl": "yarn build:colors && ng build  --deploy-url='/static/' --configuration=production-nl",
-        "i18n": "ng extract-i18n --output-path locale",
-        "serve": "yarn build:colors && ng serve",
-        "serve:en": "yarn build:colors && ng serve --proxy-config --configuration=en",
-        "serve:nl": "yarn build:colors && ng serve --proxy-config --configuration=nl",
+        "serve": "yarn build:colors && yarn ng serve",
         "stop": "lsof -t -i tcp:4200 | xargs kill -9 || echo \"not running\"",
-        "test-once": "yarn build:colors && ng test --watch=false",
-        "watch": "ng build --prod --watch"
+        "watch": "yarn ng build --prod --watch"
     },
     "private": true,
     "dependencies": {

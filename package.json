@@ -11,7 +11,7 @@
         "fyarn": "yarn front yarn",
         "preinstall": "pip install pip-tools",
         "install-data": "cd data && pip install -r requirements.txt",
-        "postinstall": "yarn fyarn",
+        "postinstall": "yarn fyarn && yarn front ./download-images.sh",
         "test-front": "yarn front yarn test-once",
         "test-data": "cd data && pytest",
         "test": "yarn test-front && yarn test-data",
