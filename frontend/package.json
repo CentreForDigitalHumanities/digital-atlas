@@ -9,9 +9,9 @@
         "build:en": "yarn build:colors && ng build  --deploy-url='/static/' --configuration=production-en",
         "build:nl": "yarn build:colors && ng build  --deploy-url='/static/' --configuration=production-nl",
         "i18n": "ng extract-i18n --output-path locale",
-        "serve": "yarn build:colors && ng serve --proxy-config ../proxy.conf.json",
-        "serve:en": "yarn build:colors && ng serve --proxy-config ../proxy.conf.json --configuration=en",
-        "serve:nl": "yarn build:colors && ng serve --proxy-config ../proxy.conf.json --configuration=nl",
+        "serve": "yarn build:colors && ng serve",
+        "serve:en": "yarn build:colors && ng serve --proxy-config --configuration=en",
+        "serve:nl": "yarn build:colors && ng serve --proxy-config --configuration=nl",
         "stop": "lsof -t -i tcp:4200 | xargs kill -9 || echo \"not running\"",
         "test-once": "yarn build:colors && ng test --watch=false",
         "watch": "ng build --prod --watch"

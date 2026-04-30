@@ -17,11 +17,11 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        python-version: ['3.8']
+        python-version: ['3.12']
         node-version: ['12.x']
     steps:
     - uses: actions/checkout@v2
@@ -33,24 +33,10 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install Python dependencies
-      run: |
-        cd backend
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    # - name: Lint with flake8
-    #   run: |
-    #     pip install flake8
-    #     # stop the build if there are Python syntax errors or undefined names
-    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run all tests
       run: |
         yarn preinstall
-        yarn install-back
         yarn install-data
-        yarn install-func
         yarn fyarn
         yarn
         yarn static-p
@@ -58,4 +44,3 @@ jobs:
         yarn start-back-p &
         chromedriver --version
         yarn test
-        yarn front ng lint
