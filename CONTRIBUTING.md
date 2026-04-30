@@ -10,7 +10,7 @@ You need to install the following software:
 
  - Python >= 3.8
  - virtualenv
- - Node.js >= 8
+ - Node.js >= 22
  - Yarn
  - [WebDriver][2] for at least one browser (only for functional testing)
  - WSGI-compatible webserver (deployment only)
