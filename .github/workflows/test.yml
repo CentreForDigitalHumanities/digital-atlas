@@ -39,7 +39,6 @@ jobs:
         yarn install-data
         yarn fyarn
         yarn
-        yarn static-p
-        find static
+        yarn build-p
         chromedriver --version
         yarn test

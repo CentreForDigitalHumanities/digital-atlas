@@ -3,7 +3,7 @@
     "scripts": {
         "start": "yarn serve",
         "ng": "node --openssl-legacy-provider ./node_modules/@angular/cli/bin/ng",
-        "build": "./download-images.sh && yarn build:colors && yarn ng build --deploy-url='/static/'",
+        "build": "./download-images.sh && yarn build:colors && yarn ng build",
         "test": "yarn build:colors && yarn ng test",
         "lint": "yarn ng lint",
         "build:colors": "cd src && node build-colors.js",

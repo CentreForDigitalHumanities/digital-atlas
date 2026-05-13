@@ -20,10 +20,8 @@
         "start": "yarn start-front",
         "build": "yarn front yarn build",
         "build-p": "yarn front yarn build --prod",
-        "collectstatic-p": "python collectstatic.py",
-        "static-p": "yarn build-p && yarn collectstatic-p",
         "watch-front-p": "yarn front yarn watch",
-        "start-p": "yarn static-p && yarn watch-front-p"
+        "start-p": "yarn build-p && yarn watch-front-p"
     },
     "devDependencies": {
         "@angular/cli": ">=11 <12"
