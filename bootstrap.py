@@ -2,14 +2,10 @@
 
 import os
 import os.path as op
-from distutils import dir_util
-import glob
-import json
 import platform
 import sys
 import subprocess
 import shlex
-import shutil
 
 SLUG = 'digital_atlas'
 WINDOWS = (platform.system() == 'Windows')
@@ -65,26 +61,24 @@ class Command(object):
         return representation
 
 
-def main(argv):
+def main():
     already_in_project, cd_into_project = prepare_cwd()
     venv, create_virtualenv, activate_venv = prepare_virtualenv()
-    pip_tools = backpack = funcpack = False
+    pip_tools = False
     if venv:
         pip_tools = install_pip_tools()
-        backpack = install_backend_packages()
-        funcpack = install_functest_packages()
     frontpack = install_frontend_packages()
     main_branch = track_main()
     gitflow = False
     if main_branch:
         gitflow = setup_gitflow()
-    if not all([gitflow, frontpack, funcpack, pip_tools]):
+    if not all([gitflow, frontpack, pip_tools]):
         print('\nPlease read {} for information on failed commands.'.format(LOGFILE_NAME))
     print('\nAlmost ready to go! Just a couple more commands to run:')
     if not already_in_project: print(cd_into_project)
     if not venv: print(create_virtualenv)
     print(activate_venv)
-    if not (pip_tools and backpack and frontpack and funcpack): print(install_all_packages)
+    if not (pip_tools and frontpack): print(install_all_packages)
     if not main_branch: print(track_main)
     if not gitflow: print(setup_gitflow)
     print(yarn_start)
@@ -153,126 +147,15 @@ def merge_json(target, source):
             target[key] = value
     return target
 
-def modify_angular_json():
-    with open('frontend/angular.json', 'r') as file:
-        data = json.load(file)
-    try:
-        project = 'digital_atlas'.replace('_', '-')
-        for lang in 'en:english,nl:dutch'.split(','):
-            [code, lang_name] = lang.split(':')
-            production = merge_json({}, data['projects'][project]['architect']['build']['configurations']['production'])
-            production['outputPath'] = f'dist/{code}'
-            production['i18nFile'] = f'locale/messages.{code}.xlf'
-            production['i18nFormat'] = 'xlf'
-            production['i18nLocale'] = code
-            production['i18nMissingTranslation'] = 'error'
-            data['projects'][project]['architect']['build']['configurations'][f'production-{code}'] = production
-
-            serve = merge_json({}, data['projects'][project]['architect']['serve']['configurations']['production'])
-            serve['browserTarget'] += f'-{code}'
-            data['projects'][project]['architect']['serve']['configurations'][code] = serve
-
-        data['projects'][project]['architect']['build']['options']['outputPath'] = \
-            data['projects'][project]['architect']['build']['configurations']['production']['outputPath'] = 'dist'
-
-        # remove e2e
-        del data['projects'][project]['architect']['e2e']
-    except:
-        print("Oh no! :( Maybe the format changed?")
-        print(json.dumps(data, indent=4))
-        raise
-    with open('frontend/angular.json', 'w') as file:
-        json.dump(data, file, indent=4)
-
-def activate_frontend():
-    framework = 'angular'
-    os.rename('package.angular.json', 'package.json')
-
-    if framework == 'backbone':
-        os.rename('frontend.backbone', 'frontend')
-        shutil.move(op.join('frontend', 'proxy.json'), 'proxy.json')
-        override_package_json()
-    elif framework == 'angular':
-        project_name = 'digital_atlas'.replace('_', '-')
-        Command(
-            'Install dependencies',
-            ['yarn', 'install', '--ignore-scripts']
-        )()
-        Command(
-            'Creating project',
-            ['yarn', 'ng', 'new', project_name, '--prefix=da',
-                '--skip-git=true',
-                '--skip-install=true',
-                '--package-manager=yarn',
-                '--style=scss',
-                '--routing=true']
-        )()
-        dir_util.copy_tree('frontend.angular', project_name)
-        os.rename(project_name, 'frontend')
-        shutil.move(op.join('frontend', 'proxy.conf.json'), 'proxy.conf.json')
-        override_package_json()
-        Command(
-            'Install frontend dependencies using Yarn',
-            ['yarn'],
-            cwd="frontend"
-        )()
-        # Remove e2e
-        shutil.rmtree(os.path.join('frontend', 'e2e'))
-        # Remove editorconfig
-        os.remove(os.path.join('frontend', '.editorconfig'))
-        modify_angular_json()
-        Command(
-            'Creating localizations',
-            ['yarn', 'ng', 'add', '@angular/localize'],
-            cwd="frontend"
-        )()
-        Command(
-            'Creating localizations',
-            ['yarn', 'i18n'],
-            cwd="frontend"
-        )()
-        for lang in 'en:english,nl:dutch'.split(','):
-            [code, lang_name] = lang.split(':')
-            shutil.copyfile('frontend/locale/messages.xlf', f'frontend/locale/messages.{code}.xlf')
-        if '4200' != '4200':
-            Command(
-                'Set frontend port',
-                ['yarn', 'ng', 'config', "projects.digital-atlas.architect.serve.options.port", '4200'],
-                cwd="frontend"
-            )()
-    else:
-        print('Unknown framework angular specified!')
-    # remove other frameworks
-    for path in glob.glob("frontend.*"):
-        shutil.rmtree(path)
-    for path in glob.glob("package.*.json"):
-        os.remove(path)
-
-def override_package_json():
-    if os.path.isfile('frontend/package.overwrite.json'):
-        print('Overriding package.json')
-        with open('frontend/package.overwrite.json', 'r') as file:
-            overwrite = json.load(file)
-        with open('frontend/package.json', 'r') as file:
-            data = json.load(file)
-        with open('frontend/package.json', 'w') as file:
-            merge_json(data, overwrite)
-            json.dump(data, file, indent=4)
-        os.remove('frontend/package.overwrite.json')
 
 install_pip_tools = Command(
     'Install pip-tools',
     ['yarn', 'preinstall'],
 )
 
-install_backend_packages = Command(
-    'Install the backend requirements',
-    ['yarn', 'install-back'],
-)
-
-install_functest_packages = Command(
-    'Install the functional test requirements',
-    ['yarn', 'install-func'],
+install_data_packages = Command(
+    'Install the data requirements',
+    ['yarn', 'install-data'],
 )
 
 install_frontend_packages = Command(
@@ -296,4 +179,4 @@ yarn_start = Command('', ['yarn', 'start'])
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    sys.exit(main())
