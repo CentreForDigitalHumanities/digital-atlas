@@ -6,12 +6,15 @@ import { Author, CollectedData, Legacy, LifeEvent, Work } from '../models/data';
 import { DataService } from '../services/data.service';
 import { EventCardService } from '../services/event-card.service';
 import { VisualService } from '../services/visual.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'da-event-card',
     templateUrl: './event-card.component.html',
     styleUrls: ['./event-card.component.scss'],
-    standalone: false
+    imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
 export class EventCardComponent implements OnInit, OnChanges {
     private data: Promise<CollectedData>;
@@ -21,19 +24,19 @@ export class EventCardComponent implements OnInit, OnChanges {
      * same events at this location.
      */
     @Input() selected = false;
-    @Input() event: LifeEvent | Work | Legacy;
+    @Input({ required: true }) event!: LifeEvent | Work | Legacy;
     @Input() includeAuthor = true;
-    @Input() searchText: string;
+    @Input() searchText?: string;
 
     @Output() goBack = new EventEmitter<{}>();
 
-    authors: { info: Author, picture: string }[];
-    picture: string;
-    formattedDate: string;
-    formattedUrl: string;
-    color: string;
+    authors?: { info: Author, picture?: string }[];
+    picture?: string;
+    formattedDate?: string;
+    formattedUrl?: string;
+    color?: string;
 
-    categoryIcon: IconDefinition;
+    categoryIcon?: IconDefinition;
     faEllipsisV = faEllipsisV;
     faCalendar = faCalendar;
     faMapMarker = faMapMarkerAlt;
@@ -72,7 +75,7 @@ export class EventCardComponent implements OnInit, OnChanges {
     }
 
 
-    getPicture(author: Author, data: CollectedData): string {
+    getPicture(author: Author, data: CollectedData): string | undefined {
         return this.visualService.getPictureSource(author, data);
     }
 
