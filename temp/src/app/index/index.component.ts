@@ -17,7 +17,6 @@ export class IndexComponent implements OnInit {
     pictures?: { [name: string]: string };
 
     constructor(private dataService: DataService, private visualService: VisualService) {
-        // titleService.setTitle('Intellectuals');
     }
 
     async ngOnInit(): Promise<void> {
