@@ -25,14 +25,19 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.app.json",
-                        "aot": true,
                         "assets": [
                             "src/assets"
                         ],
                         "styles": [
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "vendorChunk": true,
+                        "extractLicenses": false,
+                        "buildOptimizer": false,
+                        "sourceMap": true,
+                        "optimization": false,
+                        "namedChunks": true
                     },
                     "configurations": {
                         "production": {
@@ -89,11 +94,11 @@
                                     "maximumError": "10kb"
                                 }
                             ],
-                            "outputPath": "dist/en",
-                            "i18nFile": "locale/messages.en.xlf",
-                            "i18nFormat": "xlf",
-                            "i18nLocale": "en",
-                            "i18nMissingTranslation": "error"
+                            "outputPath": "dist",
+                            "i18nMissingTranslation": "error",
+                            "localize": [
+                                "en"
+                            ]
                         },
                         "production-nl": {
                             "fileReplacements": [
@@ -121,13 +126,14 @@
                                     "maximumError": "10kb"
                                 }
                             ],
-                            "outputPath": "dist/nl",
-                            "i18nFile": "locale/messages.nl.xlf",
-                            "i18nFormat": "xlf",
-                            "i18nLocale": "nl",
-                            "i18nMissingTranslation": "error"
+                            "outputPath": "dist",
+                            "i18nMissingTranslation": "error",
+                            "localize": [
+                                "nl"
+                            ]
                         }
-                    }
+                    },
+                    "defaultConfiguration": ""
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
@@ -178,6 +184,18 @@
                         "exclude": [
                             "**/node_modules/**"
                         ]
+                    }
+                }
+            },
+            "i18n": {
+                "locales": {
+                    "en": {
+                        "translation": "locale/messages.en.xlf",
+                        "baseHref": ""
+                    },
+                    "nl": {
+                        "translation": "locale/messages.nl.xlf",
+                        "baseHref": ""
                     }
                 }
             }
