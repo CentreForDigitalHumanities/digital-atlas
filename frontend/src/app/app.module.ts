@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -33,8 +33,7 @@ import { FilterMenuComponent } from './filter-menu/filter-menu.component';
 import { HighlightPipe } from './highlight.pipe';
 import { SearchComponent } from './search/search.component';
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         FooterComponent,
         MenuComponent,
@@ -56,22 +55,15 @@ import { SearchComponent } from './search/search.component';
         HighlightPipe,
         SearchComponent,
     ],
-    imports: [
-        AppRoutingModule,
+    bootstrap: [AppComponent], imports: [AppRoutingModule,
         BrowserModule,
         BrowserAnimationsModule,
         FontAwesomeModule,
-        HttpClientModule,
-        HttpClientXsrfModule.withOptions({
-            cookieName: 'csrftoken',
-            headerName: 'X-CSRFToken'
-        }),
         FormsModule,
         CheckboxModule,
         SliderModule,
-        TooltipModule,
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
-})
+        TooltipModule], providers: [provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({
+            cookieName: 'csrftoken',
+            headerName: 'X-CSRFToken'
+        }))] })
 export class AppModule { }
