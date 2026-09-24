@@ -10,7 +10,7 @@
                   {{author.name}}
                 </p>
               </header>
-              @if (pictures[author.name]) {
+              @if (pictures && pictures[author.name]) {
                 <div class="card-image">
                   <figure class="image is-square">
                     <img [src]="pictures[author.name]" alt="" class="is-radiusless">
