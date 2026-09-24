@@ -139,24 +139,24 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "digital-atlas:build"
+                      "buildTarget": "digital-atlas:build"
                     },
                     "configurations": {
                         "production": {
-                            "browserTarget": "digital-atlas:build:production"
+                          "buildTarget": "digital-atlas:build:production"
                         },
                         "en": {
-                            "browserTarget": "digital-atlas:build:production-en"
+                          "buildTarget": "digital-atlas:build:production-en"
                         },
                         "nl": {
-                            "browserTarget": "digital-atlas:build:production-nl"
+                          "buildTarget": "digital-atlas:build:production-nl"
                         }
                     }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "digital-atlas:build"
+                      "buildTarget": "digital-atlas:build"
                     }
                 },
                 "test": {
