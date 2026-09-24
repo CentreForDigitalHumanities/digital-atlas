@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'underscore';
-import { Legacy, LifeEvent, PartialDate, Work } from '../models/data';
+import { Legacy, LifeEvent, Work } from '../models/data';
 
 @Injectable({
     providedIn: 'root'
@@ -10,19 +10,21 @@ export class DatesService {
     constructor() { }
 
     getStartYear(event: LifeEvent|Work|Legacy): number {
-        if (event.startDate) {
+        if (event.startDate?.year) {
             return event.startDate.year;
         }
-        if (event.date) {
+        if (event.date?.year) {
             return event.date.year;
         }
+        return 0;
+
     }
 
     getEndYear(event: LifeEvent|Work|Legacy): number {
-        if (event.endDate) {
+        if (event.endDate?.year) {
             return event.endDate.year;
         }
-        if (event.date) {
+        if (event.date?.year) {
             return event.date.year;
         }
         return 2022;
@@ -41,6 +43,7 @@ export class DatesService {
         if (event.endDate) {
             return `until ${event.endDate.toString()}`;
         }
+        return '';
     }
 
     eventInDateRange(event: LifeEvent|Work|Legacy, dateRange: number[]|undefined): boolean {
