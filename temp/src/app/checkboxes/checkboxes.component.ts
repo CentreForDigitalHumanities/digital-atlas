@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCheck, IconDefinition, } from '@fortawesome/free-solid-svg-icons';
 import * as _ from 'underscore';
 
@@ -8,49 +10,55 @@ const defaultIcon = faCheck;
     selector: 'da-checkboxes',
     templateUrl: './checkboxes.component.html',
     styleUrls: ['./checkboxes.component.scss'],
-    standalone: false
+    imports: [FontAwesomeModule, CommonModule]
 })
 export class CheckboxesComponent implements OnChanges {
-    @Input() options: any[];
-    @Input() labelKey: string;
-    @Input() colorKey: string;
-    @Input() icons: IconDefinition[];
+    @Input() options?: any[];
+    @Input() labelKey?: string;
+    @Input() colorKey?: string;
+    @Input() icons?: IconDefinition[];
 
     @Output() selection = new EventEmitter<any[]>();
 
-    selectedIndices: { [index: number]: boolean };
+    selectedIndices?: { [index: number]: boolean };
 
-    iconList: IconDefinition[];
+    iconList?: IconDefinition[];
 
     constructor() { }
 
     ngOnChanges(changes: SimpleChanges): void {
         this.selectedIndices = {};
-        this.indices.forEach(index => this.selectedIndices[index] = true);
+        this.indices.forEach(index =>
+            this.selectedIndices ? this.selectedIndices[index] = true : undefined);
         this.emitSelection();
     }
 
     emitSelection(): void {
-        const selection = this.options.filter((option, index) => this.selectedIndices[index]);
+        const selection = this.options?.filter((option, index) =>
+            this.selectedIndices ? this.selectedIndices[index] : []);
         this.selection.emit(selection);
     }
 
-    toggleItem(index): void {
-        this.selectedIndices[index] = !this.selectedIndices[index];
-        this.emitSelection();
-    }
-
-    label(index): any {
-        const item = this.options[index];
-        if (this.labelKey) {
-            return item[this.labelKey];
-        } else {
-            return item;
+    toggleItem(index: any): void {
+        if (this.selectedIndices) {
+            this.selectedIndices[index] = !this.selectedIndices[index];
+            this.emitSelection();
         }
     }
 
-    color(index): any {
-        if (this.colorKey) {
+    label(index: any): any {
+        if (this.options) {
+            const item = this.options[index];
+            if (this.labelKey) {
+                return item[this.labelKey];
+            } else {
+                return item;
+            }
+        }
+    }
+
+    color(index: any): any {
+        if (this.colorKey && this.options) {
             const item = this.options[index];
             return item[this.colorKey];
         } else {
@@ -58,7 +66,7 @@ export class CheckboxesComponent implements OnChanges {
         }
     }
 
-    icon(index): any {
+    icon(index: any): any {
         if (this.icons) {
             return this.icons[index];
         } else {
@@ -70,5 +78,6 @@ export class CheckboxesComponent implements OnChanges {
         if (this.options) {
             return this.options.map((value, key) => key);
         }
+        return [];
     }
 }
