@@ -9,12 +9,13 @@ import { VisualService } from '../services/visual.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { HighlightPipe } from '../highlight.pipe';
 
 @Component({
     selector: 'da-event-card',
     templateUrl: './event-card.component.html',
     styleUrls: ['./event-card.component.scss'],
-    imports: [CommonModule, FontAwesomeModule, RouterLink],
+    imports: [CommonModule, FontAwesomeModule, RouterLink, HighlightPipe],
 })
 export class EventCardComponent implements OnInit, OnChanges {
     private data: Promise<CollectedData>;
@@ -28,9 +29,9 @@ export class EventCardComponent implements OnInit, OnChanges {
     @Input() includeAuthor = true;
     @Input() searchText?: string;
 
-    @Output() goBack = new EventEmitter<{}>();
+    @Output() goBack = new EventEmitter<undefined>();
 
-    authors?: { info: Author, picture?: string }[];
+    authors?: { info: Author, picture?: string, color?: any }[];
     picture?: string;
     formattedDate?: string;
     formattedUrl?: string;
@@ -67,7 +68,8 @@ export class EventCardComponent implements OnInit, OnChanges {
             this.categoryIcon = card.categoryIcon;
             this.authors = card.authors.map(author => ({
                 info: author,
-                picture: this.getPicture(author, data)
+                picture: this.getPicture(author, data),
+                color: author.color,
             }));
         }
 
