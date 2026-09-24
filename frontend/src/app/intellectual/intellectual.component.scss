@@ -1,5 +1,5 @@
 @import "../../colors";
-@import "~bulma/sass/utilities/_all";
+@import "bulma/sass/utilities/_all";
 
 @each $name, $color in $colors {
     .card.is-#{$name} {
