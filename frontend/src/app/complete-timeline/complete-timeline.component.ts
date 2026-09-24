@@ -7,7 +7,8 @@ import { VisualService } from '../services/visual.service';
 @Component({
     selector: 'da-complete-timeline',
     templateUrl: './complete-timeline.component.html',
-    styleUrls: ['./complete-timeline.component.scss']
+    styleUrls: ['./complete-timeline.component.scss'],
+    standalone: false
 })
 export class CompleteTimelineComponent implements OnInit {
     data: CollectedData;

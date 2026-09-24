@@ -5,7 +5,8 @@ import { VisualService } from '../services/visual.service';
 @Component({
     selector: 'da-filter-menu',
     templateUrl: './filter-menu.component.html',
-    styleUrls: ['./filter-menu.component.scss']
+    styleUrls: ['./filter-menu.component.scss'],
+    standalone: false
 })
 export class FilterMenuComponent implements OnChanges {
     faArrowLeft = faArrowLeft;

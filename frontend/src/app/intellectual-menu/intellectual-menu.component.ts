@@ -12,7 +12,8 @@ const doubleClickTimeout = 500;
 @Component({
     selector: 'da-intellectual-menu',
     templateUrl: './intellectual-menu.component.html',
-    styleUrls: ['./intellectual-menu.component.scss']
+    styleUrls: ['./intellectual-menu.component.scss'],
+    standalone: false
 })
 export class IntellectualMenuComponent implements OnInit {
     private lastClick = new Date().getTime();

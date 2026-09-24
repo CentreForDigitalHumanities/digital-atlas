@@ -4,7 +4,8 @@ import { TitleService } from '../../services/title.service';
 @Component({
     selector: 'da-contributors',
     templateUrl: './contributors.component.html',
-    styleUrls: ['./contributors.component.scss']
+    styleUrls: ['./contributors.component.scss'],
+    standalone: false
 })
 export class ContributorsComponent implements OnInit {
 

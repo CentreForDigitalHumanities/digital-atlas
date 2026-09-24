@@ -10,7 +10,8 @@ import { VisualService } from '../services/visual.service';
 @Component({
     selector: 'da-timeline',
     templateUrl: './timeline.component.html',
-    styleUrls: ['./timeline.component.scss']
+    styleUrls: ['./timeline.component.scss'],
+    standalone: false
 })
 export class TimelineComponent implements OnChanges {
     data: CollectedData;

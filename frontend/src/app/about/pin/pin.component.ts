@@ -4,7 +4,8 @@ import { TitleService } from '../../services/title.service';
 @Component({
     selector: 'da-pin',
     templateUrl: './pin.component.html',
-    styleUrls: ['./pin.component.scss']
+    styleUrls: ['./pin.component.scss'],
+    standalone: false
 })
 export class PinComponent implements OnInit {
 

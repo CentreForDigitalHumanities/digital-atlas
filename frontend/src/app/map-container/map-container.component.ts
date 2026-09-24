@@ -10,7 +10,8 @@ import { TitleService } from '../services/title.service';
 @Component({
     selector: 'da-map-container',
     templateUrl: './map-container.component.html',
-    styleUrls: ['./map-container.component.scss']
+    styleUrls: ['./map-container.component.scss'],
+    standalone: false
 })
 export class MapContainerComponent implements OnInit {
     faArrowLeft = faArrowLeft;

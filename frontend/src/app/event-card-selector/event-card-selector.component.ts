@@ -15,7 +15,8 @@ interface CardAuthor {
 @Component({
     selector: 'da-event-card-selector',
     templateUrl: './event-card-selector.component.html',
-    styleUrls: ['./event-card-selector.component.scss']
+    styleUrls: ['./event-card-selector.component.scss'],
+    standalone: false
 })
 export class EventCardSelectorComponent implements OnChanges, OnInit {
     private data: Promise<CollectedData>;

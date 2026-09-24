@@ -53,7 +53,8 @@ type PointLocation = {
 @Component({
     selector: 'da-map',
     templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss']
+    styleUrls: ['./map.component.scss'],
+    standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy, OnChanges {
     private svg: d3.Selection<SVGElement, any, any, any>;

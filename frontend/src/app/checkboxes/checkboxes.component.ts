@@ -7,7 +7,8 @@ const defaultIcon = faCheck;
 @Component({
     selector: 'da-checkboxes',
     templateUrl: './checkboxes.component.html',
-    styleUrls: ['./checkboxes.component.scss']
+    styleUrls: ['./checkboxes.component.scss'],
+    standalone: false
 })
 export class CheckboxesComponent implements OnChanges {
     @Input() options: any[];

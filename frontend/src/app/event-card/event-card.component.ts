@@ -10,7 +10,8 @@ import { VisualService } from '../services/visual.service';
 @Component({
     selector: 'da-event-card',
     templateUrl: './event-card.component.html',
-    styleUrls: ['./event-card.component.scss']
+    styleUrls: ['./event-card.component.scss'],
+    standalone: false
 })
 export class EventCardComponent implements OnInit, OnChanges {
     private data: Promise<CollectedData>;

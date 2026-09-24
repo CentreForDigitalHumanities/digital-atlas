@@ -6,7 +6,8 @@ import { VisualService } from './services/visual.service';
 @Component({
     selector: 'da-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
     private subscription = new Subscription();

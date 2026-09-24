@@ -8,7 +8,8 @@ import { VisualService } from '../services/visual.service';
 @Component({
     selector: 'da-index',
     templateUrl: './index.component.html',
-    styleUrls: ['./index.component.scss']
+    styleUrls: ['./index.component.scss'],
+    standalone: false
 })
 export class IndexComponent implements OnInit {
     authors: CollectedData['authors'];

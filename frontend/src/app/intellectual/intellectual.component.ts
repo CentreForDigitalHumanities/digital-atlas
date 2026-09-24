@@ -9,7 +9,8 @@ import { VisualService } from '../services/visual.service';
 @Component({
     selector: 'da-intellectual',
     templateUrl: './intellectual.component.html',
-    styleUrls: ['./intellectual.component.scss']
+    styleUrls: ['./intellectual.component.scss'],
+    standalone: false
 })
 export class IntellectualComponent implements OnInit, OnDestroy {
     data: CollectedData;
