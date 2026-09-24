@@ -18,7 +18,7 @@ export interface Location {
 }
 
 export class PartialDate {
-    year: number;
+    year?: number;
 
     // 1-based month
     month?: number;
@@ -50,20 +50,22 @@ export class PartialDate {
         } else if (b && !a) {
             return 1;
         }
-        if (a.year < b.year) {
-            return -1;
-        } else if (a.year > b.year) {
-            return 1;
+        if (a?.year && b?.year) {
+            if (a.year < b.year) {
+                return -1;
+            } else if (a.year > b.year) {
+                return 1;
+            }
         }
 
-        const [firstMonth, secondMonth] = [a.month || 1, b.month || 1];
+        const [firstMonth, secondMonth] = [a?.month || 1, b?.month || 1];
         if (firstMonth < secondMonth) {
             return -1;
         } else if (firstMonth > secondMonth) {
             return 1;
         }
 
-        const [firstDay, secondDay] = [a.day || 1, b.day || 1];
+        const [firstDay, secondDay] = [a?.day || 1, b?.day || 1];
         if (firstDay < secondDay) {
             return -1;
         } else if (firstDay > secondDay) {
@@ -83,20 +85,24 @@ export class PartialDate {
     }
 
     monthName(): string {
-        return {
-            1: 'January',
-            2: 'February',
-            3: 'March',
-            4: 'April',
-            5: 'May',
-            6: 'June',
-            7: 'July',
-            8: 'August',
-            9: 'September',
-            10: 'October',
-            11: 'November',
-            12: 'December'
-        }[this.month];
+        if (this.month) {
+            return {
+                1: 'January',
+                2: 'February',
+                3: 'March',
+                4: 'April',
+                5: 'May',
+                6: 'June',
+                7: 'July',
+                8: 'August',
+                9: 'September',
+                10: 'October',
+                11: 'November',
+                12: 'December'
+            }[this.month] || '';
+        } else {
+            return '';
+        }
     }
 }
 
