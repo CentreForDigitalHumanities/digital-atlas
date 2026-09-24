@@ -33,14 +33,14 @@ export class VisualService {
         if (event.type !== 'legacy') {
             const authorId = event.authorId;
             const author = data.authors.find(candidate => candidate.id === authorId);
-            return author.color || 'blank';
+            return author?.color || 'blank';
         }
         else {
             const aboutIds = event.aboutIds;
             if (aboutIds.length === 1) {
                 const authorId = aboutIds[0];
                 const author = data.authors.find(candidate => candidate.id === authorId);
-                return author.color || 'blank';
+                return author?.color || 'blank';
             }
         }
 
@@ -50,26 +50,28 @@ export class VisualService {
     /**
      * get the picture for an author or event
      */
-    getPicture(subject: Author | LifeEvent | Work | Legacy, data: CollectedData): Picture {
+    getPicture(subject: Author | LifeEvent | Work | Legacy, data: CollectedData): Picture | undefined {
         if (subject.pictures && subject.pictures.length) {
             const pictureName = subject.pictures[0];
             const picture = this.pictureObject(pictureName, data);
             return picture;
         }
+        return undefined;
     }
 
-    getPictureSource(subject: Author | LifeEvent | Work | Legacy, data: CollectedData): string {
+    getPictureSource(subject: Author | LifeEvent | Work | Legacy, data: CollectedData): string | undefined {
         const picture = this.getPicture(subject, data);
         return this.pictureSource(picture);
     }
 
-    private pictureObject(pictureName: string, data: CollectedData): Picture {
+    private pictureObject(pictureName: string, data: CollectedData): Picture | undefined {
         return data.pictures.find(pic => pic.name === pictureName);
     }
 
-    pictureSource(picture?: Picture): string {
+    pictureSource(picture?: Picture): string | undefined {
         if (picture) {
             return environment.assets + `/img/${picture.filename}`;
         }
+        return undefined;
     }
 }
