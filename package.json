@@ -22,8 +22,5 @@
         "build-p": "yarn front yarn build --prod",
         "watch-front-p": "yarn front yarn watch",
         "start-p": "yarn build-p && yarn watch-front-p"
-    },
-    "devDependencies": {
-        "@angular/cli": ">=11 <12"
     }
 }
