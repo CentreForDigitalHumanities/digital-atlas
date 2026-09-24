@@ -1,10 +1,12 @@
 <div class="field is-grouped is-grouped-centered has-text-weight-bold">
-    <div *ngFor="let i of indices" class="control">
-        <label class="checkbox" class="is-clickable is-{{color(i)}}" (click)="toggleItem(i)">
-            <span class="icon checkbox-box" [ngClass]="{'checked': selectedIndices[i]}">
-                <fa-icon [icon]="icon(i)"></fa-icon>
-            </span>
-            {{label(i)}}
-        </label>
+  @for (i of indices; track i) {
+    <div class="control">
+      <label class="checkbox" class="is-clickable is-{{color(i)}}" (click)="toggleItem(i)">
+        <span class="icon checkbox-box" [ngClass]="{'checked': selectedIndices[i]}">
+          <fa-icon [icon]="icon(i)"></fa-icon>
+        </span>
+        {{label(i)}}
+      </label>
     </div>
+  }
 </div>

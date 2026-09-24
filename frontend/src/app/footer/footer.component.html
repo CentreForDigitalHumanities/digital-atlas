@@ -1,71 +1,73 @@
-<footer class="footer is-hidden-print" *ngIf="!compact">
+@if (!compact) {
+  <footer class="footer is-hidden-print">
     <div class="section">
-        <div class="container">
-            <div class="columns">
-                <div class="column">
-                    <h1 class="subtitle" i18n>Digital Atlas of Postcolonial Europe: Postcolonial Intellectuals</h1>
-                    <div class="content">
-                        <p>
-                            This project is part of the PIN network. <a [routerLink]="['/about', 'PIN']">More about PIN</a>
-                        </p>
-                        <p>
-                            <a [routerLink]="['/about', 'contributors']">Contributors to the Digital Atlas project</a>
-                        </p>
-                        <p i18n>
+      <div class="container">
+        <div class="columns">
+          <div class="column">
+            <h1 class="subtitle" i18n>Digital Atlas of Postcolonial Europe: Postcolonial Intellectuals</h1>
+            <div class="content">
+              <p>
+                This project is part of the PIN network. <a [routerLink]="['/about', 'PIN']">More about PIN</a>
+              </p>
+              <p>
+                <a [routerLink]="['/about', 'contributors']">Contributors to the Digital Atlas project</a>
+              </p>
+              <p i18n>
                             <a href="https://github.com/CentreForDigitalHumanities/digital-atlas">Source code</a> (BSD
                             3-Clause License)
                         </p>
-                    </div>
-                </div>
-                <div class="column has-text-right-tablet">
-                    <div class="level">
-                        <div class="level-item">
-                            <a class="nwo-logo image" href="https://www.nwo.nl/en/projects/ig18014" target="_blank">
-                                <img src="{{environment.assets}}/nwo.svg" alt="NWO logo" i18n-alt width="53"
-                                    height="90" />
-                            </a>
-                        </div>
-                        <div class="level-item">
-                            <a class="university-logo image" href="https://uu.nl" target="_blank">
-                                <img src="{{environment.assets}}/utrecht-university.svg" alt="Utrecht University logo"
-                                    i18n-alt width="200" height="50" />
-                            </a>
-                            <a class="lab-logo image" href="https://dig.hum.uu.nl" target="_blank">
-                                <img src="{{environment.assets}}/dhlab.svg" alt="Digital Humanities Lab logo" i18n-alt
-                                    width="200" height="40" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
+          </div>
+          <div class="column has-text-right-tablet">
+            <div class="level">
+              <div class="level-item">
+                <a class="nwo-logo image" href="https://www.nwo.nl/en/projects/ig18014" target="_blank">
+                  <img src="{{environment.assets}}/nwo.svg" alt="NWO logo" i18n-alt width="53"
+                    height="90" />
+                </a>
+              </div>
+              <div class="level-item">
+                <a class="university-logo image" href="https://uu.nl" target="_blank">
+                  <img src="{{environment.assets}}/utrecht-university.svg" alt="Utrecht University logo"
+                    i18n-alt width="200" height="50" />
+                </a>
+                <a class="lab-logo image" href="https://dig.hum.uu.nl" target="_blank">
+                  <img src="{{environment.assets}}/dhlab.svg" alt="Digital Humanities Lab logo" i18n-alt
+                    width="200" height="40" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</footer>
-<footer class="footer is-hidden-print is-compact" *ngIf="compact">
+  </footer>
+}
+@if (compact) {
+  <footer class="footer is-hidden-print is-compact">
     <div class="container">
-        <div class="level">
-            <div class="level-left">
-                <div class="level-item">
-                    <a [routerLink]="['/', 'about']">about the project</a>
-                </div>
-            </div>
-
-            <div class="level-right">
-                <div class="level-item">
-                    <a class="nwo-logo image" href="https://www.nwo.nl/en/projects/ig18014" target="_blank">
-                        <img src="{{environment.assets}}/nwo.svg" alt="NWO logo" i18n-alt width="53" height="90" />
-                    </a>
-                </div>
-                <div class="level-item">
-                    <a class="university-logo image" href="https://uu.nl" target="_blank">
-                        <img src="{{environment.assets}}/utrecht-university.svg" alt="Utrecht University logo" i18n-alt />
-                    </a>
-                    <a class="lab-logo image" href="https://dig.hum.uu.nl" target="_blank">
-                        <img src="{{environment.assets}}/dhlab.svg" alt="Digital Humanities Lab logo" i18n-alt />
-                    </a>
-                </div>
-            </div>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <a [routerLink]="['/', 'about']">about the project</a>
+          </div>
         </div>
+        <div class="level-right">
+          <div class="level-item">
+            <a class="nwo-logo image" href="https://www.nwo.nl/en/projects/ig18014" target="_blank">
+              <img src="{{environment.assets}}/nwo.svg" alt="NWO logo" i18n-alt width="53" height="90" />
+            </a>
+          </div>
+          <div class="level-item">
+            <a class="university-logo image" href="https://uu.nl" target="_blank">
+              <img src="{{environment.assets}}/utrecht-university.svg" alt="Utrecht University logo" i18n-alt />
+            </a>
+            <a class="lab-logo image" href="https://dig.hum.uu.nl" target="_blank">
+              <img src="{{environment.assets}}/dhlab.svg" alt="Digital Humanities Lab logo" i18n-alt />
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-
-</footer>
+  </footer>
+}

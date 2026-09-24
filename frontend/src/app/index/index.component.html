@@ -1,20 +1,26 @@
 <div class="section">
-<div class="container">
-<div class="columns is-multiline is-centered" *ngIf="authors">
-    <div class="column is-2" *ngFor="let author of authors">
-        <div class="card is-radiusless is-{{author.color || 'blank'}}" [routerLink]="['/intellectual', author.id]">
-            <header class="card-header">
+  <div class="container">
+    @if (authors) {
+      <div class="columns is-multiline is-centered">
+        @for (author of authors; track author) {
+          <div class="column is-2">
+            <div class="card is-radiusless is-{{author.color || 'blank'}}" [routerLink]="['/intellectual', author.id]">
+              <header class="card-header">
                 <p class="card-header-title">
-                    {{author.name}}
+                  {{author.name}}
                 </p>
-            </header>
-            <div class="card-image" *ngIf="pictures[author.name]">
-                <figure class="image is-square">
+              </header>
+              @if (pictures[author.name]) {
+                <div class="card-image">
+                  <figure class="image is-square">
                     <img [src]="pictures[author.name]" alt="" class="is-radiusless">
-                </figure>
+                  </figure>
+                </div>
+              }
             </div>
-        </div>
-    </div>
-</div>
-</div>
+          </div>
+        }
+      </div>
+    }
+  </div>
 </div>
