@@ -5,41 +5,43 @@ import * as _ from 'underscore';
 import { DatesService } from '../services/dates.service';
 import { EventType, TimelineEvent, TimelineTile } from '../models/timeline';
 import { VisualService } from '../services/visual.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { EventCardComponent } from '../event-card/event-card.component';
 
 
 @Component({
     selector: 'da-timeline',
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
-    standalone: false
+    imports: [FontAwesomeModule, EventCardComponent]
 })
 export class TimelineComponent implements OnChanges {
-    data: CollectedData;
-    @Input() authors: Author[];
-    events: TimelineEvent[];
-    filteredEvents: TimelineEvent[];
-    eventsByColumn: TimelineEvent[][];
-    columns: TimelineTile[][];
-    minYear: number;
-    maxYear: number;
-    timeRange: number[];
+    data?: CollectedData;
+    @Input({ required: true }) authors!: Author[];
+    events?: TimelineEvent[];
+    filteredEvents?: TimelineEvent[];
+    eventsByColumn?: TimelineEvent[][];
+    columns?: TimelineTile[][];
+    minYear: number = 1900;
+    maxYear: number = 2022;
+    timeRange?: number[];
 
     categories: ('life event' | 'work' | 'legacy')[] = ['life event', 'work', 'legacy'];
 
-    @Input() narrowCardColumn: boolean;
+    @Input({ required: true }) narrowCardColumn!: boolean;
 
-    selectedEvent: TimelineEvent;
-    selectedEventPosition: number;
+    selectedEvent?: TimelineEvent;
+    selectedEventPosition?: number;
 
     icons: VisualService['icons'];
 
     tickHeight = 2.5;
 
-    previewEvent: TimelineEvent;
-    mouseX: number;
-    mouseY: number;
+    previewEvent?: TimelineEvent;
+    mouseX?: number;
+    mouseY?: number;
 
-    @ViewChild('eventCard') eventCard: ElementRef;
+    @ViewChild('eventCard') eventCard?: ElementRef;
 
     @Output() eventSelect = new EventEmitter<{ event: LifeEvent | Work | Legacy, y: number }>();
 
@@ -182,7 +184,7 @@ export class TimelineComponent implements OnChanges {
         return [minYear, maxYear];
     }
 
-    setTimeRange(minYear, maxYear): number[] {
+    setTimeRange(minYear?: number, maxYear?: number): number[] {
         if (minYear && maxYear) {
             return _.range(this.minYear, this.maxYear + 1);
         }
@@ -227,18 +229,20 @@ export class TimelineComponent implements OnChanges {
     }
 
     private lastYearInTiles(tiles: TimelineTile[], minYear: number): number {
-        return tiles.length ? _.last(tiles).endYear : minYear - 1;
+        return _.last(tiles)?.endYear ?? minYear - 1;
     }
 
     private setEventIndices(): void {
         let index = 0;
         _.range(this.minYear, this.maxYear).forEach(year =>
-            this.columns.forEach(column => {
+            this.columns?.forEach(column => {
                 const tile = column.find(t =>
                     t.event && (t.startYear === year || (year === this.minYear && t.startYear === undefined))
                 );
                 if (tile) {
-                    tile.event.index = index;
+                    if (tile.event) {
+                        tile.event.index = index;
+                    }
                     index += 1;
                 }
             })
@@ -278,7 +282,8 @@ export class TimelineComponent implements OnChanges {
         this.previewEvent = timelineEvent;
     }
 
-    @HostListener('mousemove', ['$event']) onMouseMove(event): void {
+    @HostListener('mousemove', ['$event'])
+    onMouseMove(event: MouseEvent): void {
         this.mouseX = event.clientX;
         this.mouseY = event.clientY;
     }
@@ -291,7 +296,7 @@ export class TimelineComponent implements OnChanges {
         const windowTop = window.scrollY;
         const windowBottom = windowTop + window.innerHeight;
 
-        const eventTop = this.eventCard.nativeElement.offsetTop;
+        const eventTop = this.eventCard?.nativeElement.offsetTop;
 
         const newPosition = _.max([0, eventTop - window.innerHeight / 3]);
 
@@ -303,10 +308,14 @@ export class TimelineComponent implements OnChanges {
     }
 
     jumpEvent(direction: 'previous' | 'next'): void {
-        const index = this.selectedEvent.index;
+        const index = this.selectedEvent?.index || 0;
         const delta = direction === 'previous' ? - 1 : 1;
         const newIndex = index + delta;
-        this.selectedEvent = this.filteredEvents.find(event => event.index === newIndex);
-        this.selectedEventPosition = this.getPosition(this.selectedEvent);
+        this.selectedEvent = this.filteredEvents?.find(event => event.index === newIndex);
+        if (this.selectedEvent) {
+            this.selectedEventPosition = this.getPosition(this.selectedEvent);
+        } else {
+            this.selectedEventPosition = undefined;
+        }
     }
 }

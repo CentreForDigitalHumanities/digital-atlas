@@ -29,21 +29,22 @@ export class VisualService {
         return this.mainHeight.asObservable();
     }
 
-    getColor(event: LifeEvent | Work | Legacy, data: CollectedData): string {
-        if (event.type !== 'legacy') {
-            const authorId = event.authorId;
-            const author = data.authors.find(candidate => candidate.id === authorId);
-            return author?.color || 'blank';
+    getColor(event: LifeEvent | Work | Legacy, data?: CollectedData): string {
+        if (data) {
+          if (event.type !== 'legacy') {
+              const authorId = event.authorId;
+              const author = data.authors.find(candidate => candidate.id === authorId);
+              return author?.color || 'blank';
+          }
+          else {
+              const aboutIds = event.aboutIds;
+              if (aboutIds.length === 1) {
+                  const authorId = aboutIds[0];
+                  const author = data.authors.find(candidate => candidate.id === authorId);
+                  return author?.color || 'blank';
+              }
+          }
         }
-        else {
-            const aboutIds = event.aboutIds;
-            if (aboutIds.length === 1) {
-                const authorId = aboutIds[0];
-                const author = data.authors.find(candidate => candidate.id === authorId);
-                return author?.color || 'blank';
-            }
-        }
-
         return 'blank';
     }
 
