@@ -7,6 +7,7 @@ import { baseTitle, formatTitle } from './title';
 import { IntellectualComponent } from './intellectual/intellectual.component';
 import { SearchComponent } from './search/search.component';
 import { CompleteTimelineComponent } from './complete-timeline/complete-timeline.component';
+import { MapContainerComponent } from './map-container/map-container.component';
 
 
 export const routes: Routes = [
@@ -20,10 +21,11 @@ export const routes: Routes = [
         component: IntellectualComponent,
         title: baseTitle,
     },
-    // {
-    //     path: 'map',
-    //     component: MapContainerComponent
-    // },
+    {
+        path: 'map',
+        component: MapContainerComponent,
+        title: formatTitle('Map'),
+    },
     {
         path: 'timeline',
         component: CompleteTimelineComponent,
