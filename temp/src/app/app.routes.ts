@@ -3,19 +3,21 @@ import { ContributorsComponent } from './about/contributors/contributors.compone
 import { PinComponent } from './about/pin/pin.component';
 import { AboutComponent } from './about/about.component';
 import { IndexComponent } from './index/index.component';
+import { baseTitle, formatTitle } from './title';
+import { IntellectualComponent } from './intellectual/intellectual.component';
 
-const title = (page: string) => `${page} - Digital Atlas`;
 
 export const routes: Routes = [
     {
         path: 'index',
         component: IndexComponent,
-        title: title('Intellectuals'),
+        title: formatTitle('Intellectuals'),
     },
-    // {
-    //     path: 'intellectual/:id',
-    //     component: IntellectualComponent,
-    // },
+    {
+        path: 'intellectual/:id',
+        component: IntellectualComponent,
+        title: baseTitle,
+    },
     // {
     //     path: 'map',
     //     component: MapContainerComponent
@@ -41,7 +43,7 @@ export const routes: Routes = [
             },
             {
                 path: '',
-                title: title('About'),
+                title: formatTitle('About'),
                 component: AboutComponent,
             }
         ]
