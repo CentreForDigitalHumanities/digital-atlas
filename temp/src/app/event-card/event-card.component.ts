@@ -10,12 +10,15 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HighlightPipe } from '../highlight.pipe';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'da-event-card',
     templateUrl: './event-card.component.html',
     styleUrls: ['./event-card.component.scss'],
-    imports: [CommonModule, FontAwesomeModule, RouterLink, HighlightPipe],
+    imports: [
+        CommonModule, FontAwesomeModule, RouterLink, HighlightPipe, MatTooltipModule,
+    ],
 })
 export class EventCardComponent implements OnInit, OnChanges {
     private data: Promise<CollectedData>;

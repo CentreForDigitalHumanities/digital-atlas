@@ -8,7 +8,8 @@ import { DataService } from '../services/data.service';
 import { VisualService } from '../services/visual.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
-import { TooltipModule } from 'primeng/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 const doubleClickTimeout = 500;
 
@@ -17,7 +18,7 @@ const doubleClickTimeout = 500;
     templateUrl: './intellectual-menu.component.html',
     styleUrls: ['./intellectual-menu.component.scss'],
     standalone: true,
-    imports: [CommonModule, FontAwesomeModule, TooltipModule],
+    imports: [CommonModule, FontAwesomeModule, MatTooltipModule],
 })
 export class IntellectualMenuComponent implements OnInit {
     private lastClick = new Date().getTime();

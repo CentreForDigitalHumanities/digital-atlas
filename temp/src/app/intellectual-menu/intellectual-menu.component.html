@@ -3,7 +3,7 @@
     @for (author of data.authors; track author.id) {
       <div
         class="column author-column is-{{author.color}} has-text-centered is-clickable"
-        [pTooltip]="tooltipMessage(author)" showDelay="600" [ngClass]="{'is-active': isActive(author)}"
+        [matTooltip]="tooltipMessage(author)" showDelay="600" [ngClass]="{'is-active': isActive(author)}"
         (click)="toggleAuthor(author)" (keydown.enter)="toggleAuthor(author)">
         <div class="author-image">
             @if (pictures && pictures[author.id]) {
