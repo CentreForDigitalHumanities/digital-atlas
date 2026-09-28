@@ -30,7 +30,7 @@ export class DataService {
         return this.promiseData;
     }
 
-    filterData(data: any, authors: Author[], categories: string[], dateRange: number[]): CollectedData {
+    filterData(data: any, authors: Author[], categories: string[], dateRange?: number[]): CollectedData {
         const authorIds = authors.map(author => author.id);
 
         let lifeEvents: LifeEvent[];

@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Author, CollectedData } from '../models/data';
 import { DataService } from '../services/data.service';
-import { TitleService } from '../services/title.service';
 import { VisualService } from '../services/visual.service';
+import { IntellectualMenuComponent } from '../intellectual-menu/intellectual-menu.component';
+import { TimelineComponent } from '../timeline/timeline.component';
 
 @Component({
     selector: 'da-complete-timeline',
     templateUrl: './complete-timeline.component.html',
     styleUrls: ['./complete-timeline.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [IntellectualMenuComponent, TimelineComponent]
 })
 export class CompleteTimelineComponent implements OnInit {
-    data: CollectedData;
+    data?: CollectedData;
     icons: any;
 
-    filteredData: CollectedData;
+    filteredData?: CollectedData;
 
-    constructor(private dataService: DataService, private visualService: VisualService, titleService: TitleService) {
-        titleService.setTitle('Timeline');
+    constructor(private dataService: DataService, private visualService: VisualService) {
     }
 
     ngOnInit(): void {
