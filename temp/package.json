@@ -19,7 +19,9 @@
     "@angular/router": "^22.2.0",
     "@fortawesome/angular-fontawesome": "^5.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "@primeuix/themes": "^3.0.1",
     "bulma": "^0.9.4",
+    "primeng": "^22.1.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "underscore": "^1.13.8"
