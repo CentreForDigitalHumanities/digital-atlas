@@ -61,7 +61,7 @@ type PointLocation = {
     standalone: true,
     imports: [CommonModule, FontAwesomeModule, EventCardComponent, EventCardSelectorComponent]
 })
-export class MapComponent implements OnInit, OnDestroy, OnChanges {
+export class MapComponent implements OnDestroy, OnChanges {
     private svg?: d3.Selection<SVGElement, any, any, any>;
     private projection?: d3.GeoProjection;
     private zoom?: d3.ZoomBehavior<Element, unknown>;
@@ -106,9 +106,6 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                 this.height = height;
                 this.mapReady = this.drawMap();
             }));
-    }
-
-    ngOnInit(): void {
     }
 
     ngOnDestroy(): void {
