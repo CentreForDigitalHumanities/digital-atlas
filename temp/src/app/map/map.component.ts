@@ -1,4 +1,4 @@
-import { Component, EventEmitter, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, input, signal, viewChild } from '@angular/core';
+import { Component, EventEmitter, ElementRef, HostListener, OnChanges, OnDestroy, Output, SimpleChanges, input, signal, viewChild, computed } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
@@ -95,7 +95,11 @@ export class MapComponent implements OnDestroy, OnChanges {
     private moving = false;
 
     private allPoints?: PointLocation[];
-    private pointLocations?: PointLocation[];
+    private pointLocations = signal<PointLocation[]>([]);
+
+    stackSizes = computed<number[]>(() =>
+        _.uniq(this.pointLocations().map(point => point.stackSize))
+    );
 
     constructor(private visualService: VisualService, private datesService: DatesService) {
         this.icons = visualService.icons;
@@ -334,7 +338,7 @@ export class MapComponent implements OnDestroy, OnChanges {
 
     private updatePoints(): void {
         if (this.allPoints) {
-            this.pointLocations = this.collapseOverlappingPoints(this.allPoints);
+            this.pointLocations.set(this.collapseOverlappingPoints(this.allPoints));
             this.drawPoints();
         }
     }
@@ -483,7 +487,7 @@ export class MapComponent implements OnDestroy, OnChanges {
             const delta = direction === 'previous' ? -1 : 1;
             const newIndex = index + delta;
 
-            const newPoint = this.pointLocations?.find(point => point.indices.includes(newIndex));
+            const newPoint = this.pointLocations().find(point => point.indices.includes(newIndex));
 
             if (newPoint) {
                 let newEvent: LifeEvent | Work | Legacy;
@@ -500,10 +504,4 @@ export class MapComponent implements OnDestroy, OnChanges {
         }
     }
 
-    get stackSizes(): number[] {
-        if (this.pointLocations) {
-            return _.uniq(this.pointLocations.map(point => point.stackSize));
-        }
-        return [];
-    }
 }
