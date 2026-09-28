@@ -6,7 +6,6 @@
     "build": "./download-images.sh && yarn build:colors && yarn ng build",
     "test": "yarn build:colors && yarn ng test",
     "lint": "yarn ng lint",
-    "build:colors": "cd src && node build-colors.js",
     "serve": "yarn build:colors && yarn ng serve",
     "stop": "lsof -t -i tcp:4200 | xargs kill -9 || echo \"not running\"",
     "watch": "yarn ng build --configuration production --watch"
