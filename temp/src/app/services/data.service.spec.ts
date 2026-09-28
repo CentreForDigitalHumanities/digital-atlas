@@ -118,7 +118,7 @@ describe('DataService', () => {
                 expected: ['Stuart Hall at desk', 'Stuart Hall standing']
             }, {
                 input: '',
-                expected: undefined
+                expected: [],
             }
         ];
         values.forEach(item => {
@@ -228,7 +228,7 @@ describe('DataService', () => {
                 date: new PartialDate('1948-01-01'),
                 startDate: undefined,
                 endDate: undefined,
-                pictures: undefined,
+                pictures: [],
                 where: locations[3],
                 title: '',
                 description: 'Capécia, Mayotte, 1948, Je suis Martiniquaise, Paris: Corrêa. Translated as I Am a Martinican Woman in I Am a Martinican Woman/The White Negress: Two Novelettes, Beatrice Stith Clark (trans.), Pueblo, CO: Passeggiata Press, 1997.',
@@ -264,7 +264,7 @@ describe('DataService', () => {
                 date: new PartialDate('1969-01-01'),
                 startDate: undefined,
                 endDate: undefined,
-                pictures: undefined,
+                pictures: [],
                 where: undefined,
                 title: 'Renate Zahar, Frantz Fanon: Colonialism and Alienation (1969, trans. 1974, Monthly Review Press)',
                 description: '',
@@ -297,7 +297,7 @@ describe('DataService', () => {
                 date: new PartialDate('1942-01-01'),
                 startDate: undefined,
                 endDate: undefined,
-                pictures: undefined,
+                pictures: [],
                 where: locations[1],
                 title: 'Resistance',
                 description: 'Fled Martinique as a dissident and tried to enlist in the Free French Forces in Dominica',
