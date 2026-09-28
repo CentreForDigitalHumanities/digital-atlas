@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, viewChild, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
@@ -16,8 +16,7 @@ export class App {
     title = 'digital-atlas';
     compactFooter = false;
 
-    @ViewChild('main')
-    main?: ElementRef<HTMLElement>;
+    main = viewChild.required<ElementRef<HTMLElement>>('main');
 
     constructor(private visualService: VisualService, router: Router) {
         this.subscription.add(router.events.subscribe(event => {
@@ -32,9 +31,11 @@ export class App {
     }
 
     ngAfterViewInit(): void {
-        if (this.main) {
-            this.visualService.setMainHeight(this.main.nativeElement.clientHeight);
-        }
+        setTimeout(() => {
+            if (this.main) {
+                this.visualService.setMainHeight(this.main().nativeElement.clientHeight);
+            }
+        })
     }
 
     ngOnDestroy(): void {
