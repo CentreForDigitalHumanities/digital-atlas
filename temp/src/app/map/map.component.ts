@@ -1,4 +1,4 @@
-import { Component, EventEmitter, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, input, signal, viewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
@@ -76,21 +76,20 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
     zoomFactor = 1;
 
-    @Input() data?: CollectedData;
+    data = input<CollectedData | undefined>();
     @Output() showNextButton = new EventEmitter<boolean>();
     @Output() showPrevButton = new EventEmitter<boolean>();
     points: any = undefined;
 
-    @ViewChild('target')
-    target?: ElementRef<SVGElement>;
+    target = viewChild.required<ElementRef<SVGElement>>('target');
 
-    mergedEvents?: MergedEvents;
+    mergedEvents = signal<MergedEvents | undefined>(undefined);
     selectedPoint?: PointLocation;
-    selectedEvent?: LifeEvent | Work | Legacy;
-    previewEventTitle?: string;
+    selectedEvent = signal<LifeEvent | Work | Legacy | undefined>(undefined);
+    previewEventTitle = signal<string | undefined>(undefined);
 
-    mouseX?: number;
-    mouseY?: number;
+    mouseX = signal<number | undefined>(undefined);
+    mouseY = signal<number | undefined>(undefined);
 
     // don't trigger mouseovers when automatically moving the card
     moving = false;
@@ -117,13 +116,14 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     async ngOnChanges(changes: SimpleChanges): Promise<void> {
-        if (this.data) {
+        const data = this.data();
+        if (data) {
             await this.mapReady;
 
             const allEvents = _.flatten([
-                _.map(this.data.lifeEvents, this.locationFromEvent, this),
-                _.map(this.data.works, this.locationFromEvent, this),
-                _.map(this.data.legacies, this.locationFromEvent, this)
+                _.map(data.lifeEvents, this.locationFromEvent, this),
+                _.map(data.works, this.locationFromEvent, this),
+                _.map(data.legacies, this.locationFromEvent, this)
             ]);
             const points = allEvents.filter(event => !! event?.where) as PointLocation[];
             this.allPoints = this.setPointIndices(points);
@@ -135,7 +135,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         if (event.where) {
             return {
                 where: event.where,
-                color: this.visualService.getColor(event, this.data),
+                color: this.visualService.getColor(event, this.data()),
                 event,
                 stackSize: 1,
                 indices: [-1], // temprorary index, wi
@@ -246,8 +246,9 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         const projection = d3.geoMercator()
             .scale(400);
 
-        if (this.target && this.height) {
-            const svg = d3.select(this.target.nativeElement)
+
+        if (this.target() && this.height) {
+            const svg = d3.select(this.target().nativeElement)
                 .attr('width', '100%')
                 // warning! this reads the current height outside of this component
                 .attr('height', this.height)
@@ -298,7 +299,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private setZoom(): void {
-        if (this.target) {
+        if (this.target()) {
             const handleZoom = (e: any) => {
                 this.hideEventPreview();
                 d3.select('svg g')
@@ -308,7 +309,6 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                 this.zoomFactor = e.transform.k;
 
                 this.updatePoints();
-
             };
 
             if (this.projection) {
@@ -327,7 +327,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                         .scaleExtent(scaleExtent)
                         .translateExtent([topLeft, bottomRight]);
 
-                    d3.select(this.target.nativeElement)
+                    d3.select(this.target().nativeElement)
                         .call(this.zoom as unknown as any);
                 }
 
@@ -409,17 +409,17 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     openMixedEvent(obj: MergedEvents): void {
-        this.mergedEvents = obj;
+        this.mergedEvents.set(obj);
     }
 
-    selectEventFromMix(event: MapComponent['selectedEvent']): void {
-        this.selectedEvent = event;
+    selectEventFromMix(event: LifeEvent | Work | Legacy): void {
+        this.selectedEvent.set(event);
         this.showNextButton.next(true);
         this.showPrevButton.next(true);
     }
 
     backToMix(): void {
-        this.selectedEvent = undefined;
+        this.selectedEvent.set(undefined);
         this.showNextButton.next(false);
         this.showPrevButton.next(false);
     }
@@ -429,22 +429,22 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         this.selectedPoint = obj;
 
         if (obj.event.type === 'mixed') {
-            this.selectedEvent = undefined;
+            this.selectedEvent.set(undefined);
             this.showNextButton.next(false);
             this.showPrevButton.next(false);
             this.openMixedEvent(obj.event);
         } else {
-            this.selectedEvent = obj.event;
+            this.selectedEvent.set(obj.event);
             this.showNextButton.next(true);
             this.showPrevButton.next(true);
-            this.mergedEvents = undefined;
+            this.mergedEvents.set(undefined);
         }
     }
 
     hideEventCard(): void {
         this.selectedPoint = undefined;
-        this.selectedEvent = undefined;
-        this.mergedEvents = undefined;
+        this.selectedEvent.set(undefined);
+        this.mergedEvents.set(undefined);
         this.showNextButton.next(false);
         this.showPrevButton.next(false);
         this.updatePoints();
@@ -456,19 +456,19 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         if (obj.event.type === 'mixed') {
-            this.previewEventTitle = `${obj.event.events.length} events`;
+            this.previewEventTitle.set(`${obj.event.events.length} events`);
         } else {
-            this.previewEventTitle = obj.event.title;
+            this.previewEventTitle.set(obj.event.title);
         }
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent): void {
-        this.mouseX = event.clientX;
-        this.mouseY = event.clientY;
+        this.mouseX.set(event.clientX);
+        this.mouseY.set(event.clientY);
     }
 
     hideEventPreview(): void {
-        this.previewEventTitle = undefined;
+        this.previewEventTitle.set(undefined);
     }
 
     jumpEvent(direction: 'previous' | 'next'): void {

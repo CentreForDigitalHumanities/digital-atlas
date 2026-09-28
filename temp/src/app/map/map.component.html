@@ -1,20 +1,23 @@
-@if (previewEventTitle) {
-    @if (mouseX !== undefined && mouseY != undefined) {
-        <div class="box event-preview"
-          [style.top.px]="mouseY - 20" [style.left.px]="mouseX + 20">
-          {{previewEventTitle}}
-        </div>
-    }
+@let previewTitle = previewEventTitle();
+@let mx = mouseX();
+@let my = mouseY();
+@if (previewTitle && mx !== undefined && my !== undefined) {
+    <div class="box event-preview"
+        [style.top.px]="my - 20" [style.left.px]="mx + 20">
+        {{previewTitle}}
+    </div>
 }
 
-@if (selectedEvent) {
+@let selected = selectedEvent();
+@if (selected) {
   <div class="event-card-container">
-    <da-event-card [event]="selectedEvent" [selected]="!!mergedEvents" (goBack)="backToMix()"></da-event-card>
+    <da-event-card [event]="selected" [selected]="!!mergedEvents" (goBack)="backToMix()"></da-event-card>
   </div>
 }
-@if (!selectedEvent && mergedEvents) {
+@let merged = mergedEvents();
+@if (!selected && merged) {
   <div class="event-card-container">
-    <da-event-card-selector [events]="mergedEvents.events" (selected)="selectEventFromMix($event)"></da-event-card-selector>
+    <da-event-card-selector [events]="merged.events" (selected)="selectEventFromMix($event)"></da-event-card-selector>
   </div>
 }
 
