@@ -1,8 +1,10 @@
 @if (previewEventTitle) {
-  <div class="box event-preview"
-    [style.top.px]="mouseY - 20" [style.left.px]="mouseX + 20">
-    {{previewEventTitle}}
-  </div>
+    @if (mouseX !== undefined && mouseY != undefined) {
+        <div class="box event-preview"
+          [style.top.px]="mouseY - 20" [style.left.px]="mouseX + 20">
+          {{previewEventTitle}}
+        </div>
+    }
 }
 
 @if (selectedEvent) {

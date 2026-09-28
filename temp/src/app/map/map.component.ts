@@ -11,6 +11,10 @@ import { CollectedData, Legacy, LifeEvent, Location, Work } from '../models/data
 import { colors } from '../../colors';
 import { VisualService } from '../services/visual.service';
 import { DatesService } from '../services/dates.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CommonModule } from '@angular/common';
+import { EventCardComponent } from '../event-card/event-card.component';
+import { EventCardSelectorComponent } from '../event-card-selector/event-card-selector.component';
 
 const worldPath = '/data/world-atlas-110m.json';
 
@@ -54,15 +58,16 @@ type PointLocation = {
     selector: 'da-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, FontAwesomeModule, EventCardComponent, EventCardSelectorComponent]
 })
 export class MapComponent implements OnInit, OnDestroy, OnChanges {
-    private svg: d3.Selection<SVGElement, any, any, any>;
-    private projection: d3.GeoProjection;
-    private zoom: d3.ZoomBehavior<Element, unknown>;
-    private mapReady: Promise<void>;
-    private height: number;
-    private subscription: Subscription;
+    private svg?: d3.Selection<SVGElement, any, any, any>;
+    private projection?: d3.GeoProjection;
+    private zoom?: d3.ZoomBehavior<Element, unknown>;
+    private mapReady?: Promise<void>;
+    private height?: number;
+    private subscription = new Subscription();
 
     faSquare = faSquare;
 
@@ -71,33 +76,33 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
     zoomFactor = 1;
 
-    @Input() data: CollectedData;
+    @Input() data?: CollectedData;
     @Output() showNextButton = new EventEmitter<boolean>();
     @Output() showPrevButton = new EventEmitter<boolean>();
     points: any = undefined;
 
     @ViewChild('target')
-    target: ElementRef<SVGElement>;
+    target?: ElementRef<SVGElement>;
 
-    mergedEvents: MergedEvents;
-    selectedPoint: PointLocation;
-    selectedEvent: LifeEvent | Work | Legacy;
+    mergedEvents?: MergedEvents;
+    selectedPoint?: PointLocation;
+    selectedEvent?: LifeEvent | Work | Legacy;
     previewEventTitle?: string;
 
-    mouseX: number;
-    mouseY: number;
+    mouseX?: number;
+    mouseY?: number;
 
     // don't trigger mouseovers when automatically moving the card
     moving = false;
 
-    allPoints: PointLocation[];
-    pointLocations: PointLocation[];
+    allPoints?: PointLocation[];
+    pointLocations?: PointLocation[];
 
     constructor(private visualService: VisualService, private datesService: DatesService) {
         this.icons = visualService.icons;
         this.iconList = Object.values(visualService.icons);
 
-        this.subscription = new Subscription().add(
+        this.subscription.add(
             this.visualService.getMainHeight().subscribe(height => {
                 this.height = height;
                 this.mapReady = this.drawMap();
@@ -120,20 +125,23 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                 _.map(this.data.works, this.locationFromEvent, this),
                 _.map(this.data.legacies, this.locationFromEvent, this)
             ]);
-            const points = allEvents.filter(event => event.where);
+            const points = allEvents.filter(event => !! event?.where) as PointLocation[];
             this.allPoints = this.setPointIndices(points);
             this.updatePoints();
         }
     }
 
-    private locationFromEvent(event: LifeEvent | Work | Legacy): PointLocation {
-        return {
-            where: event.where,
-            color: this.visualService.getColor(event, this.data),
-            event,
-            stackSize: 1,
-            indices: [-1], // temprorary index, wi
-        };
+    private locationFromEvent(event: LifeEvent | Work | Legacy): PointLocation | undefined {
+        if (event.where) {
+            return {
+                where: event.where,
+                color: this.visualService.getColor(event, this.data),
+                event,
+                stackSize: 1,
+                indices: [-1], // temprorary index, wi
+            };
+        }
+        return undefined;
     }
 
     private setPointIndices(points: PointLocation[]): PointLocation[] {
@@ -216,15 +224,20 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
     /** distance between points on map */
     private eventsDistance(point1: PointLocation, point2: PointLocation): number {
-        const position1 = this.projection([point1.where.long, point1.where.lat]);
-        const position2 = this.projection([point2.where.long, point2.where.lat]);
+        if (this.projection) {
+            const position1 = this.projection([point1.where.long, point1.where.lat]);
+            const position2 = this.projection([point2.where.long, point2.where.lat]);
 
-        const deltaX = Math.abs(position1[0] - position2[0]);
-        const deltaY = Math.abs(position1[1] - position2[1]);
-        const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+            if (position1 && position2) {
+                const deltaX = Math.abs(position1[0] - position2[0]);
+                const deltaY = Math.abs(position1[1] - position2[1]);
+                const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-        const scaledDistance = distance * this.zoomFactor;
-        return scaledDistance;
+                const scaledDistance = distance * this.zoomFactor;
+                return scaledDistance;
+            }
+        }
+        return Infinity;
     }
 
     private async drawMap(): Promise<void> {
@@ -233,40 +246,50 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         const projection = d3.geoMercator()
             .scale(400);
 
-        const svg = d3.select(this.target.nativeElement)
-            .attr('width', '100%')
-            // warning! this reads the current height outside of this component
-            .attr('height', this.height)
-            .attr('viewBox', `0 0 ${mapWidth} ${mapHeight}`);
+        if (this.target && this.height) {
+            const svg = d3.select(this.target.nativeElement)
+                .attr('width', '100%')
+                // warning! this reads the current height outside of this component
+                .attr('height', this.height)
+                .attr('viewBox', `0 0 ${mapWidth} ${mapHeight}`);
 
-        const path = d3.geoPath()
-            .projection(projection);
+            const path = d3.geoPath()
+                .projection(projection);
 
-        const g = svg.append('g');
+            const g = svg.append('g');
 
-        g.append('g')
-            .attr('class', 'boundary')
-            .selectAll('boundary')
-            .data(topojson.feature(world, world.objects.countries).features)
-            .enter().append('path')
-            .attr('name', (d: any) => d.properties.name)
-            .attr('id', (d: any) => d.id)
-            .attr('d', path)
-            .on('click', this.hideEventCard.bind(this));
+            g.append('g')
+                .attr('class', 'boundary')
+                .selectAll('boundary')
+                .data(topojson.feature(world, world.objects.countries).features)
+                .enter().append('path')
+                .attr('name', (d: any) => d.properties.name)
+                .attr('id', (d: any) => d.id)
+                .attr('d', path)
+                .on('click', this.hideEventCard.bind(this));
 
-        this.svg = svg;
-        this.projection = projection;
+            this.svg = svg;
+            this.projection = projection;
 
-        this.setZoom();
-        const [x, y] = this.projection([
-            coords.center.long,
-            coords.center.lat]);
-        this.zoom.translateTo(this.svg, x, y);
+            this.setZoom();
+            const coordinates = this.projection([
+                coords.center.long,
+                coords.center.lat]);
+
+            if (coordinates && this.zoom) {
+                this.zoom.translateTo(this.svg, ...coordinates);
+            }
+        }
     }
 
-    private pointTransform(location: Location): string {
-        const [x, y] = this.projection([location.long, location.lat]);
-        return this.SVGTransform(x, y, this.zoomFactor);
+    private pointTransform(location: Location): string | undefined {
+        if (this.projection) {
+            const coordinates = this.projection([location.long, location.lat]);
+            if (coordinates) {
+                return this.SVGTransform(...coordinates, this.zoomFactor);
+            }
+        }
+        return undefined;
     }
 
     private SVGTransform(x: number, y: number, zoomFactor: number): string {
@@ -275,58 +298,71 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private setZoom(): void {
-        const handleZoom = (e: any) => {
-            this.hideEventPreview();
-            d3.select('svg g')
-                .attr('transform', e.transform);
+        if (this.target) {
+            const handleZoom = (e: any) => {
+                this.hideEventPreview();
+                d3.select('svg g')
+                    .attr('transform', e.transform);
 
-            // update points overlap and size
-            this.zoomFactor = e.transform.k;
+                // update points overlap and size
+                this.zoomFactor = e.transform.k;
 
-            this.updatePoints();
+                this.updatePoints();
 
-        };
+            };
 
-        const topLeft = this.projection([
-            coords.topLeft.long,
-            coords.topLeft.lat
-        ]);
-        const bottomRight = this.projection([
-            coords.bottomRight.long,
-            coords.bottomRight.lat
-        ]);
+            if (this.projection) {
+                const topLeft = this.projection([
+                    coords.topLeft.long,
+                    coords.topLeft.lat
+                ]);
+                const bottomRight = this.projection([
+                    coords.bottomRight.long,
+                    coords.bottomRight.lat
+                ]);
 
-        this.zoom = d3.zoom()
-            .on('zoom', handleZoom)
-            .scaleExtent(scaleExtent)
-            .translateExtent([topLeft, bottomRight]);
+                if (topLeft && bottomRight) {
+                    this.zoom = d3.zoom()
+                        .on('zoom', handleZoom)
+                        .scaleExtent(scaleExtent)
+                        .translateExtent([topLeft, bottomRight]);
 
-        d3.select(this.target.nativeElement)
-            .call(this.zoom);
+                    d3.select(this.target.nativeElement)
+                        .call(this.zoom);
+                }
+
+            }
+        }
     }
 
     private updatePoints(): void {
-        this.pointLocations = this.collapseOverlappingPoints(this.allPoints);
-        this.drawPoints();
+        if (this.allPoints) {
+            this.pointLocations = this.collapseOverlappingPoints(this.allPoints);
+            this.drawPoints();
+        }
     }
 
     private async drawPoints(): Promise<void> {
-        if (this.points) {
-            this.points.remove();
+        if (this.svg) {
+            if (this.points) {
+                this.points.remove();
+            }
+            if (this.pointLocations) {
+                this.points = this.svg.select('g').selectAll('use')
+                    .data(this.pointLocations)
+                    .enter()
+                    .append('use')
+                    .attr('href', this.pointHref.bind(this))
+                    .attr('x', -256)
+                    .attr('y', -256)
+                    .attr('transform', (d: PointLocation) => this.pointTransform(d.where))
+                    .attr('color', (d: PointLocation) => colors[d.color])
+                    .attr('fill', (d: PointLocation) => colors[d.color])
+                    .on('click', this.selectEvent.bind(this))
+                    .on('mouseover', this.showEventPreview.bind(this))
+                    .on('mouseleave', this.hideEventPreview.bind(this));
+            }
         }
-        this.points = this.svg.select('g').selectAll('use')
-            .data(this.pointLocations)
-            .enter()
-            .append('use')
-            .attr('href', this.pointHref.bind(this))
-            .attr('x', -256)
-            .attr('y', -256)
-            .attr('transform', (d: PointLocation) => this.pointTransform(d.where))
-            .attr('color', (d: PointLocation) => colors[d.color])
-            .attr('fill', (d: PointLocation) => colors[d.color])
-            .on('click', this.selectEvent.bind(this))
-            .on('mouseover', this.showEventPreview.bind(this))
-            .on('mouseleave', this.hideEventPreview.bind(this));
     }
 
     private pointHref(point: PointLocation): string {
@@ -349,21 +385,26 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
 
     async moveToPoint(event: { where?: Location }): Promise<void> {
-        if (event.where) {
-            this.moving = true;
-            const [x, y] = this.projection([
-                event.where.long,
-                event.where.lat]);
+        if (this.projection && this.svg && this.zoom) {
+            if (event.where) {
+                this.moving = true;
+                const coordinates = this.projection([
+                    event.where.long,
+                    event.where.lat]);
 
-            this.hideEventPreview();
+                if (coordinates) {
+                    this.hideEventPreview();
 
-            await this.svg.transition()
-                .duration(750)
-                .call(this.zoom.translateTo, x, y)
-                .end();
+                    await this.svg.transition()
+                        .duration(750)
+                        .call(this.zoom.translateTo, ...coordinates)
+                        .end();
 
-            this.moving = false;
-            this.hideEventPreview();
+                    this.moving = false;
+                }
+
+                this.hideEventPreview();
+            }
         }
     }
 
@@ -383,7 +424,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         this.showPrevButton.next(false);
     }
 
-    selectEvent(clickEvent: MouseEvent, obj: PointLocation): void {
+    selectEvent(clickEvent: MouseEvent | null, obj: PointLocation): void {
         this.moveToPoint(obj.event);
         this.selectedPoint = obj;
 
@@ -421,7 +462,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    @HostListener('mousemove', ['$event']) onMouseMove(event): void {
+    @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent): void {
         this.mouseX = event.clientX;
         this.mouseY = event.clientY;
     }
@@ -431,31 +472,35 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     jumpEvent(direction: 'previous' | 'next'): void {
-        let index: number;
-        if (this.selectedPoint.event.type === 'mixed') {
-            const eventIndex = this.selectedPoint.event.events.findIndex(event =>
-                _.isEqual(event, this.selectedEvent)
-            );
-            index = this.selectedPoint.indices[eventIndex];
-        } else {
-            index = this.selectedPoint.indices[0];
+        if (this.selectedPoint) {
+            let index: number;
+            if (this.selectedPoint.event.type === 'mixed') {
+                const eventIndex = this.selectedPoint.event.events.findIndex(event =>
+                    _.isEqual(event, this.selectedEvent)
+                );
+                index = this.selectedPoint.indices[eventIndex];
+            } else {
+                index = this.selectedPoint.indices[0];
+            }
+
+            const delta = direction === 'previous' ? -1 : 1;
+            const newIndex = index + delta;
+
+            const newPoint = this.pointLocations?.find(point => point.indices.includes(newIndex));
+
+            if (newPoint) {
+                let newEvent: LifeEvent | Work | Legacy;
+                if (newPoint.event.type === 'mixed') {
+                    const eventIndex = newPoint.indices.findIndex(i => i === newIndex);
+                    newEvent = newPoint.event.events[eventIndex];
+                } else {
+                    newEvent = newPoint.event;
+                }
+
+                this.selectEvent(null, newPoint);
+                this.selectEventFromMix(newEvent);
+            }
         }
-
-        const delta = direction === 'previous' ? -1 : 1;
-        const newIndex = index + delta;
-
-        const newPoint = this.pointLocations.find(point => point.indices.includes(newIndex));
-        let newEvent: LifeEvent | Work | Legacy;
-
-        if (newPoint.event.type === 'mixed') {
-            const eventIndex = newPoint.indices.findIndex(i => i === newIndex);
-            newEvent = newPoint.event.events[eventIndex];
-        } else {
-            newEvent = newPoint.event;
-        }
-
-        this.selectEvent(null, newPoint);
-        this.selectEventFromMix(newEvent);
     }
 
     get stackSizes(): number[] {
