@@ -1,60 +1,63 @@
+@let auth = author();
 <div class="section">
   <div class="container">
-    @if (author) {
+    @if (auth) {
       <div class="columns">
         <div class="column is-one-quarter">
           <div class="block">
-            <div class="card is-radiusless is-{{author.color}}">
+            <div class="card is-radiusless is-{{auth.color}}">
               <header class="card-header">
                 <p class="card-header-title">
-                  {{author.name}}
+                  {{auth.name}}
                 </p>
               </header>
-              @if (pictureFile) {
+              @let picSrc = pictureFile();
+              @if (picSrc) {
                 <div class="card-image">
                   <figure class="image">
-                    <img [src]="pictureFile" alt="" class="is-radiusless">
+                    <img [src]="picSrc" alt="" class="is-radiusless">
                   </figure>
                 </div>
               }
             </div>
           </div>
-          @if (picture) {
+          @let pic = picture();
+          @if (pic) {
             <div class="block has-text-grey is-italic is-small">
-              © photograph by {{picture.author}} ({{picture.license}})
+              © photograph by {{pic.author}} ({{pic.license}})
             </div>
           }
-          @if (author.dateOfBirth || author.placeOfBirth) {
+          @if (auth.dateOfBirth || auth.placeOfBirth) {
             <div class="block has-text-centered">
               <div class="heading">born</div>
-              @if (author.dateOfBirth) {
-                <span>{{author.dateOfBirth}} </span>
+              @if (auth.dateOfBirth) {
+                <span>{{auth.dateOfBirth}} </span>
               }
-              @if (author.dateOfBirth && author.placeOfBirth) {
+              @if (auth.dateOfBirth && auth.placeOfBirth) {
                 <span>‒ </span>
               }
-              @if (author.placeOfBirth) {
-                <span>{{author.placeOfBirth.name}}</span>
+              @if (auth.placeOfBirth) {
+                <span>{{auth.placeOfBirth.name}}</span>
               }
             </div>
           }
-          @if (author.dateOfDeath) {
+          @if (auth.dateOfDeath) {
             <div class="block has-text-centered">
               <div class="heading">died</div>
-              @if (author.dateOfDeath) {
-                <span>{{author.dateOfDeath}} </span>
+              @if (auth.dateOfDeath) {
+                <span>{{auth.dateOfDeath}} </span>
               }
-              @if (author.dateOfDeath && author.placeOfDeath) {
+              @if (auth.dateOfDeath && auth.placeOfDeath) {
                 <span>‒ </span>
               }
-              @if (author.placeOfDeath) {
-                <span>{{author.placeOfDeath.name}}</span>
+              @if (auth.placeOfDeath) {
+                <span>{{auth.placeOfDeath.name}}</span>
               }
             </div>
           }
-          @if (author.description) {
+          @if (auth.description) {
             <div class="block has-text-justified">
-              {{author.description}}
+              {{auth.description}}
             </div>
           }
         </div>
@@ -62,7 +65,7 @@
           <div class="block">
             <h2 class="subtitle is-3 mb-1">Timeline</h2>
           </div>
-          <da-timeline [authors]="[author]" [narrowCardColumn]="false"></da-timeline>
+          <da-timeline [authors]="[auth]" [narrowCardColumn]="false"></da-timeline>
         </div>
       </div>
     }
