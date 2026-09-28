@@ -6,12 +6,14 @@ import { DataService } from '../services/data.service';
 import { VisualService } from '../services/visual.service';
 import { Title } from '@angular/platform-browser';
 import { formatTitle } from '../title';
+import { TimelineComponent } from '../timeline/timeline.component';
 
 @Component({
     selector: 'da-intellectual',
     templateUrl: './intellectual.component.html',
     styleUrls: ['./intellectual.component.scss'],
     standalone: true,
+    imports: [TimelineComponent],
 })
 export class IntellectualComponent implements OnInit, OnDestroy {
     data?: CollectedData;
