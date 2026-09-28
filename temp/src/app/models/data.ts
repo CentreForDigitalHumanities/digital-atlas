@@ -78,12 +78,15 @@ export class PartialDate {
     }
 
     toString(): string {
-        if (this.day !== undefined) {
+        if (this.day !== undefined && this.month !== undefined && this.year !== undefined) {
             return `${this.monthName()} ${this.day}, ${this.year}`;
-        } else if (this.month !== undefined) {
+        } else if (this.month !== undefined && this.year !== undefined) {
             return `${this.monthName()} ${this.year}`;
+        } else if (this.year !== undefined) {
+            return `${this.year}`
+        } else {
+            return 'unknown'
         }
-        return `${this.year}`;
     }
 
     monthName(): string {
