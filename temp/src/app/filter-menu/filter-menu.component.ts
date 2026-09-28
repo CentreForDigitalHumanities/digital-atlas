@@ -1,12 +1,18 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { VisualService } from '../services/visual.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CommonModule } from '@angular/common';
+import { CheckboxesComponent } from '../checkboxes/checkboxes.component';
+import { SliderModule } from 'primeng/slider';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'da-filter-menu',
     templateUrl: './filter-menu.component.html',
     styleUrls: ['./filter-menu.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, FormsModule, FontAwesomeModule, CheckboxesComponent, SliderModule]
 })
 export class FilterMenuComponent implements OnChanges {
     faArrowLeft = faArrowLeft;
@@ -17,12 +23,12 @@ export class FilterMenuComponent implements OnChanges {
     categories = ['Life', 'Work', 'Legacy'];
     eventIcons: VisualService['icons'][keyof VisualService['icons']][];
 
-    @Input() dateRange: [number, number];
-    minYear: number;
-    maxYear: number;
+    @Input() dateRange?: [number, number];
+    minYear?: number;
+    maxYear?: number;
 
     selectedCategories: string[] = [];
-    selectedDateRange: [number, number];
+    selectedDateRange?: [number, number];
 
     @Output() filter = new EventEmitter<{
         categories: string[],

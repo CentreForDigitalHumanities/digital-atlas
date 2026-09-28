@@ -7,13 +7,14 @@ import { EventType, TimelineEvent, TimelineTile } from '../models/timeline';
 import { VisualService } from '../services/visual.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EventCardComponent } from '../event-card/event-card.component';
+import { FilterMenuComponent } from '../filter-menu/filter-menu.component';
 
 
 @Component({
     selector: 'da-timeline',
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
-    imports: [FontAwesomeModule, EventCardComponent]
+    imports: [FontAwesomeModule, EventCardComponent, FilterMenuComponent]
 })
 export class TimelineComponent implements OnChanges {
     data?: CollectedData;

@@ -22,10 +22,12 @@
             (onSlideEnd)="emitFilters()"></p-slider>
           </div>
         </div>
-        <div class="columns has-text-weight-bold">
-          <div class="column">{{selectedDateRange[0]}}</div>
-          <div class="column" style="text-align: right;">{{selectedDateRange[1]}}</div>
-        </div>
+        @if (selectedDateRange) {
+            <div class="columns has-text-weight-bold">
+                <div class="column">{{selectedDateRange[0]}}</div>
+                <div class="column" style="text-align: right;">{{selectedDateRange[1]}}</div>
+            </div>
+        }
       </div>
     }
     <div class="column next-column is-narrow">
