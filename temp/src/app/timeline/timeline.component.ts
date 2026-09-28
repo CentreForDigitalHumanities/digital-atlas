@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, EventEmitter, HostListener, input, Input, OnChanges, Output, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { Author, CollectedData, Legacy, LifeEvent, Work } from '../models/data';
 import { DataService } from '../services/data.service';
 import * as _ from 'underscore';
@@ -8,39 +8,46 @@ import { VisualService } from '../services/visual.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { FilterMenuComponent } from '../filter-menu/filter-menu.component';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
     selector: 'da-timeline',
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
-    imports: [FontAwesomeModule, EventCardComponent, FilterMenuComponent]
+    imports: [FontAwesomeModule, EventCardComponent, FilterMenuComponent, CommonModule]
 })
 export class TimelineComponent implements OnChanges {
-    data?: CollectedData;
-    @Input({ required: true }) authors!: Author[];
-    events?: TimelineEvent[];
-    filteredEvents?: TimelineEvent[];
-    eventsByColumn?: TimelineEvent[][];
-    columns?: TimelineTile[][];
-    minYear: number = 1900;
-    maxYear: number = 2022;
-    timeRange?: number[];
+    data = signal<CollectedData | undefined>(undefined);
+    authors = input.required<Author[]>();
+    events = signal<TimelineEvent[]>([]);
+    filteredEvents = signal<TimelineEvent[]>([]);
+    eventsByColumn = signal<TimelineEvent[][]>([]);
+    columns = signal<TimelineTile[][]>([]);
+    minYear = signal<number>(1900);
+    maxYear = signal<number>(2022);
+    timeRange = computed(() => this.setTimeRange(this.minYear(), this.maxYear()));
 
-    categories: ('life event' | 'work' | 'legacy')[] = ['life event', 'work', 'legacy'];
+    categories = signal<('life event' | 'work' | 'legacy')[]>(['life event', 'work', 'legacy']);
 
-    @Input({ required: true }) narrowCardColumn!: boolean;
+    narrowCardColumn = input.required<boolean>();
 
-    selectedEvent?: TimelineEvent;
-    selectedEventPosition?: number;
+    selectedEvent = signal<TimelineEvent | undefined>(undefined);
+    selectedEventPosition = computed<number | undefined>(() => {
+        const event = this.selectedEvent();
+        if (event) {
+            return this.getPosition(event, this.minYear());
+        }
+        return undefined;
+    });
 
     icons: VisualService['icons'];
 
     tickHeight = 2.5;
 
-    previewEvent?: TimelineEvent;
-    mouseX?: number;
-    mouseY?: number;
+    previewEvent = signal<TimelineEvent | undefined>(undefined);
+    mouseX = signal<number | undefined>(undefined);
+    mouseY = signal<number | undefined>(undefined);
 
     @ViewChild('eventCard') eventCard?: ElementRef;
 
@@ -51,26 +58,21 @@ export class TimelineComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.authors) {
-            this.dataService.getData().then(data => {
-                this.data = data;
-                this.processData();
-            });
-        }
+        this.dataService.getData().then(data => {
+            this.data.set(data);
+            this.processData(data);
+        });
     }
 
-    processData(): void {
-        if (this.data) {
-            this.events = this.getEvents(this.data);
-            this.filteredEvents = this.filterData(this.events);
-            this.eventsByColumn = this.splitEventsIntoColumns(this.filteredEvents);
-            const timeDomain = this.getTimeDomain(this.filteredEvents);
-            this.minYear = timeDomain[0];
-            this.maxYear = timeDomain[1];
-            this.timeRange = this.setTimeRange(this.minYear, this.maxYear);
-            this.columns = this.eventsByColumn.map(col => this.makeTimelineColumn(col));
-            this.setEventIndices();
-        }
+    processData(data: CollectedData): void {
+        this.events.set(this.getEvents(data));
+        this.filteredEvents.set(this.filterData(this.events()));
+        this.eventsByColumn.set(this.splitEventsIntoColumns(this.filteredEvents()));
+        const timeDomain = this.getTimeDomain(this.filteredEvents());
+        this.minYear.set(timeDomain[0]);
+        this.maxYear.set(timeDomain[1]);
+        this.columns.set(this.eventsByColumn().map(col => this.makeTimelineColumn(col)));
+        this.setEventIndices();
     }
 
     getEvents(data: CollectedData): TimelineEvent[] {
@@ -82,9 +84,9 @@ export class TimelineComponent implements OnChanges {
     }
 
     filterData(events: TimelineEvent[]): TimelineEvent[] {
-        const authorIds = this.authors.map(author => author.id);
+        const authorIds = this.authors().map(author => author.id);
         return events.filter(event =>
-            authorIds.includes(event.authorId) && this.categories.includes(event.type)
+            authorIds.includes(event.authorId) && this.categories().includes(event.type)
         );
     }
 
@@ -94,11 +96,14 @@ export class TimelineComponent implements OnChanges {
             Work: 'work',
             Legacy: 'legacy'
         };
-        this.categories = categories.map(category =>
+        this.categories.set(categories.map(category =>
             categoryKeys[category] as 'life event' | 'work' | 'legacy'
-        );
-        this.selectedEvent = undefined;
-        this.processData();
+        ));
+        this.selectedEvent.set(undefined);
+        const data = this.data();
+        if (data) {
+            this.processData(data);
+        };
     }
 
     convertLifeEvents(lifeEvents: LifeEvent[]): TimelineEvent[] {
@@ -187,7 +192,7 @@ export class TimelineComponent implements OnChanges {
 
     setTimeRange(minYear?: number, maxYear?: number): number[] {
         if (minYear && maxYear) {
-            return _.range(this.minYear, this.maxYear + 1);
+            return _.range(minYear, maxYear + 1);
         }
         return [];
     }
@@ -196,12 +201,12 @@ export class TimelineComponent implements OnChanges {
         const tiles = _.reduce(columnEvents, this.addEventToTiles.bind(this), []);
 
         // add final filler cell if needed
-        const prevYear = this.lastYearInTiles(tiles, this.minYear);
-        if (prevYear < this.maxYear) {
+        const prevYear = this.lastYearInTiles(tiles, this.minYear());
+        if (prevYear < this.maxYear()) {
             tiles.push({
                 startYear: prevYear + 1,
-                endYear: this.maxYear,
-                span: this.maxYear - prevYear,
+                endYear: this.maxYear(),
+                span: this.maxYear() - prevYear,
             });
         }
 
@@ -209,7 +214,7 @@ export class TimelineComponent implements OnChanges {
     }
 
     private addEventToTiles(tiles: TimelineTile[], event: TimelineEvent): TimelineTile[] {
-        const prevYear = this.lastYearInTiles(tiles, this.minYear);
+        const prevYear = this.lastYearInTiles(tiles, this.minYear());
 
         if (prevYear + 1 < event.startYear) {
             tiles.push({
@@ -235,10 +240,10 @@ export class TimelineComponent implements OnChanges {
 
     private setEventIndices(): void {
         let index = 0;
-        _.range(this.minYear, this.maxYear).forEach(year =>
-            this.columns?.forEach(column => {
+        _.range(this.minYear(), this.maxYear()).forEach(year =>
+            this.columns().forEach(column => {
                 const tile = column.find(t =>
-                    t.event && (t.startYear === year || (year === this.minYear && t.startYear === undefined))
+                    t.event && (t.startYear === year || (year === this.minYear() && t.startYear === undefined))
                 );
                 if (tile) {
                     if (tile.event) {
@@ -262,35 +267,34 @@ export class TimelineComponent implements OnChanges {
         if (tile.span) {
             return this.tickHeight * tile.span;
         } else {
-            return this.tickHeight * (1 + this.maxYear - this.minYear);
+            return this.tickHeight * (1 + this.maxYear() - this.minYear());
         }
     }
 
-    getPosition(event: TimelineEvent): number {
-        return (event.startYear - this.minYear) * this.tickHeight || 0;
+    getPosition(event: TimelineEvent, minYear: number): number {
+        return (event.startYear - minYear) * this.tickHeight || 0;
     }
 
     getColor(event: TimelineEvent): string {
-        return this.visualService.getColor(event.data, this.data);
+        return this.visualService.getColor(event.data, this.data());
     }
 
     selectEvent(event: TimelineEvent): void {
-        this.selectedEvent = event;
-        this.selectedEventPosition = this.getPosition(event);
+        this.selectedEvent.set(event);
     }
 
     showEventPreview(timelineEvent: TimelineEvent): void {
-        this.previewEvent = timelineEvent;
+        this.previewEvent.set(timelineEvent);
     }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.mouseX = event.clientX;
-        this.mouseY = event.clientY;
+        this.mouseX.set(event.clientX);
+        this.mouseY.set(event.clientY);
     }
 
     hideEventPreview(): void {
-        this.previewEvent = undefined;
+        this.previewEvent.set(undefined);
     }
 
     scrollToEventCard(): void {
@@ -309,14 +313,9 @@ export class TimelineComponent implements OnChanges {
     }
 
     jumpEvent(direction: 'previous' | 'next'): void {
-        const index = this.selectedEvent?.index || 0;
+        const index = this.selectedEvent()?.index || 0;
         const delta = direction === 'previous' ? - 1 : 1;
         const newIndex = index + delta;
-        this.selectedEvent = this.filteredEvents?.find(event => event.index === newIndex);
-        if (this.selectedEvent) {
-            this.selectedEventPosition = this.getPosition(this.selectedEvent);
-        } else {
-            this.selectedEventPosition = undefined;
-        }
+        this.selectedEvent.set(this.filteredEvents().find(event => event.index === newIndex));
     }
 }
