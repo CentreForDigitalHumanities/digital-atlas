@@ -1,9 +1,8 @@
-@if (authors) {
-  @for (author of authors; track author.info.id) {
+@for (author of authors(); track author.info.id) {
     <div class="panel is-{{author.info.color}}">
-      <div class="panel-block author-link" [ngClass]="{'is-clickable': authors.length > 1}"
+      <div class="panel-block author-link" [ngClass]="{'is-clickable': authors().length > 1}"
         (click)="toggleAuthor(author)">
-        <div class="column author-name has-text-right" [innerHtml]="author.info.name | highlight:searchText">
+        <div class="column author-name has-text-right" [innerHtml]="author.info.name | highlight:searchText()">
         </div>
         @if (author.picture) {
           <div class="column is-narrow">
@@ -20,10 +19,10 @@
               <fa-icon [icon]="event.categoryIcon"></fa-icon>
             </span>
             <div class="columns event-item">
-              <div class="column" [innerHtml]="event.title | highlight:searchText">
+              <div class="column" [innerHtml]="event.title | highlight:searchText()">
               </div>
               <div class="column is-narrow has-text-right">
-                <span class="tag date-tag" [innerHtml]="event.date | highlight:searchText">
+                <span class="tag date-tag" [innerHtml]="event.date | highlight:searchText()">
                 </span>
               </div>
             </div>
@@ -36,5 +35,4 @@
         </a>
       }
     </div>
-  }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, input, Input, OnChanges, OnInit, Output, signal, SimpleChanges } from '@angular/core';
 
 import { Author, CollectedData, Legacy, LifeEvent, PartialDate, Work } from '../models/data';
 import { DataService } from '../services/data.service';
@@ -24,12 +24,10 @@ interface CardAuthor {
 })
 export class EventCardSelectorComponent implements OnChanges, OnInit {
     private data: Promise<CollectedData>;
-    authors: CardAuthor[] = [];
+    authors = signal<CardAuthor[]>([]);
 
-    @Input()
-    events: (LifeEvent | Work | Legacy)[] = [];
-    @Input()
-    searchText?: string;
+    events = input<(LifeEvent | Work | Legacy)[]>([]);
+    searchText = input<string | undefined>(undefined);
 
     @Output()
     selected = new EventEmitter<LifeEvent | Work | Legacy>();
@@ -43,7 +41,7 @@ export class EventCardSelectorComponent implements OnChanges, OnInit {
 
     async ngOnChanges(changes: SimpleChanges): Promise<void> {
         const data = await this.data;
-        const events = (this.events ?? []);
+        const events = (this.events() ?? []);
         events.sort((a, b) => PartialDate.comparer(a.startDate || a.date, b.startDate || b.date));
         const cards = events.map(event => this.eventCardService.get(event, data, true));
         const cardsGroupedByAuthors: { [id: number]: EventCard[] } = {};
@@ -72,11 +70,11 @@ export class EventCardSelectorComponent implements OnChanges, OnInit {
             }
         }
 
-        this.authors = update;
+        this.authors.set(update);
     }
 
     toggleAuthor(author: CardAuthor): void {
-        if (this.authors.length > 1) {
+        if (this.authors().length > 1) {
             author.show = !author.show;
         }
     }

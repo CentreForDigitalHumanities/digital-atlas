@@ -9,13 +9,12 @@
 }
 
 @let selected = selectedEvent();
+@let merged = mergedEvents();
 @if (selected) {
   <div class="event-card-container">
     <da-event-card [event]="selected" [selected]="!!mergedEvents" (goBack)="backToMix()"></da-event-card>
   </div>
-}
-@let merged = mergedEvents();
-@if (!selected && merged) {
+} @else if (merged) {
   <div class="event-card-container">
     <da-event-card-selector [events]="merged.events" (selected)="selectEventFromMix($event)"></da-event-card-selector>
   </div>
