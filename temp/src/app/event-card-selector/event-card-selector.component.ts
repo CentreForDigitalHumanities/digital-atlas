@@ -4,10 +4,13 @@ import { Author, CollectedData, Legacy, LifeEvent, PartialDate, Work } from '../
 import { DataService } from '../services/data.service';
 import { EventCard, EventCardService } from '../services/event-card.service';
 import { VisualService } from '../services/visual.service';
+import { CommonModule } from '@angular/common';
+import { HighlightPipe } from '../highlight.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 interface CardAuthor {
     info: Author;
-    picture: string;
+    picture?: string;
     events: EventCard[];
     show: boolean;
 }
@@ -16,16 +19,17 @@ interface CardAuthor {
     selector: 'da-event-card-selector',
     templateUrl: './event-card-selector.component.html',
     styleUrls: ['./event-card-selector.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, HighlightPipe, FontAwesomeModule]
 })
 export class EventCardSelectorComponent implements OnChanges, OnInit {
     private data: Promise<CollectedData>;
     authors: CardAuthor[] = [];
 
     @Input()
-    events: (LifeEvent | Work | Legacy)[];
+    events: (LifeEvent | Work | Legacy)[] = [];
     @Input()
-    searchText: string;
+    searchText?: string;
 
     @Output()
     selected = new EventEmitter<LifeEvent | Work | Legacy>();
@@ -55,7 +59,7 @@ export class EventCardSelectorComponent implements OnChanges, OnInit {
         }
 
         // retain the default order of authors
-        const update: EventCardSelectorComponent['authors'] = [];
+        const update: CardAuthor[] = [];
         for (const author of data.authors) {
             const groupedCards = cardsGroupedByAuthors[author.id];
             if (groupedCards.length) {
