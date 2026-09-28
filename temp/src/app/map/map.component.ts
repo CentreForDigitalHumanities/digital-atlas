@@ -74,17 +74,17 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     icons: VisualService['icons'];
     iconList: VisualService['icons'][keyof VisualService['icons']][];
 
-    zoomFactor = 1;
+    private zoomFactor = 1;
 
     data = input<CollectedData | undefined>();
     @Output() showNextButton = new EventEmitter<boolean>();
     @Output() showPrevButton = new EventEmitter<boolean>();
-    points: any = undefined;
+    private points: any = undefined;
 
     target = viewChild.required<ElementRef<SVGElement>>('target');
 
     mergedEvents = signal<MergedEvents | undefined>(undefined);
-    selectedPoint?: PointLocation;
+    private selectedPoint?: PointLocation;
     selectedEvent = signal<LifeEvent | Work | Legacy | undefined>(undefined);
     previewEventTitle = signal<string | undefined>(undefined);
 
@@ -92,10 +92,10 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
     mouseY = signal<number | undefined>(undefined);
 
     // don't trigger mouseovers when automatically moving the card
-    moving = false;
+    private moving = false;
 
-    allPoints?: PointLocation[];
-    pointLocations?: PointLocation[];
+    private allPoints?: PointLocation[];
+    private pointLocations?: PointLocation[];
 
     constructor(private visualService: VisualService, private datesService: DatesService) {
         this.icons = visualService.icons;
