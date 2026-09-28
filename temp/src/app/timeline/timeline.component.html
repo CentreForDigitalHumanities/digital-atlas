@@ -1,7 +1,9 @@
 @if (previewEvent) {
-  <div class="box event-preview" [style.top.px]="mouseY - 20" [style.left.px]="mouseX + 20">
-    {{previewEvent.data.title}}
-  </div>
+    @if (mouseX != undefined && mouseY !== undefined) {
+        <div class="box event-preview" [style.top.px]="mouseY - 20" [style.left.px]="mouseX + 20">
+          {{previewEvent.data.title}}
+        </div>
+    }
 }
 <div class="columns is-mobile">
   <div class="column is-narrow timeline-scale">
