@@ -1,9 +1,5 @@
 @import "../../variables";
 
-$nwoLogoHeight: 90px;
-$compactScale: 0.7;
-$compactFooterSize: $compactScale * $nwoLogoHeight + 3px;
-
 .filter-menu {
     position: sticky;
     left: 0em;

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, ElementRef, HostListener, OnChanges, OnDestroy, Output, SimpleChanges, input, signal, viewChild, computed } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { delay, Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import * as _ from 'underscore';
