@@ -6,12 +6,11 @@
         [pTooltip]="tooltipMessage(author)" showDelay="600" [ngClass]="{'is-active': isActive(author)}"
         (click)="toggleAuthor(author)" (keydown.enter)="toggleAuthor(author)">
         <div class="author-image">
-          @if (pictures[author.id]) {
-            <img [src]="pictures[author.id]" alt="{{author.name}}" class="is-radiusless">
-          }
-          @if (!pictures[author.id]) {
-            <div>{{author.name}}</div>
-          }
+            @if (pictures && pictures[author.id]) {
+                  <img [src]="pictures[author.id]" alt="{{author.name}}" class="is-radiusless">
+            } @else {
+              <div>{{author.name}}</div>
+            }
         </div>
         <div class="author-overlay">
           <div>{{author.name}}</div>
