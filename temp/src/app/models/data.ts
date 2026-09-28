@@ -31,9 +31,11 @@ export class PartialDate {
         switch (parts.length) {
             case 3:
                 this.day = parseInt(parts[2], 10);
+                break;
             /* falls through */
             case 2:
                 this.month = parseInt(parts[1], 10);
+                break;
             /* falls through */
             case 1:
                 this.year = parseInt(parts[0], 10);
