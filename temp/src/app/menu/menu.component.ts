@@ -1,14 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, NgZone } from '@angular/core';
-import { animations, showState } from '../animations';
+import { RouterLink } from '@angular/router';
 
 @Component({
-    animations,
     selector: 'da-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
+    imports: [CommonModule, RouterLink]
 })
 export class MenuComponent implements OnInit {
-    burgerShow: showState;
+    burgerShow = 'hide';
     burgerActive = false;
 
     constructor(private ngZone: NgZone) { }
