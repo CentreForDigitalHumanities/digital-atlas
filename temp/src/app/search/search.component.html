@@ -23,8 +23,7 @@
       </div>
       <div class="column">
         @if (selectedEvent) {
-          <da-event-card [event]="selectedEvent" [includeAuthor]="true"
-            [canJump]="false" [searchText]="searchText">
+          <da-event-card [event]="selectedEvent" [includeAuthor]="true" [searchText]="searchText">
           </da-event-card>
         }
         @if (!selectedEvent) {

@@ -5,6 +5,7 @@ import { AboutComponent } from './about/about.component';
 import { IndexComponent } from './index/index.component';
 import { baseTitle, formatTitle } from './title';
 import { IntellectualComponent } from './intellectual/intellectual.component';
+import { SearchComponent } from './search/search.component';
 
 
 export const routes: Routes = [
@@ -26,10 +27,11 @@ export const routes: Routes = [
     //     path: 'timeline',
     //     component: CompleteTimelineComponent,
     // },
-    // {
-    //     path: 'search',
-    //     component: SearchComponent,
-    // },
+    {
+        path: 'search',
+        component: SearchComponent,
+        title: formatTitle('Search'),
+    },
     {
         path: 'about',
         children: [
