@@ -261,11 +261,11 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
             g.append('g')
                 .attr('class', 'boundary')
                 .selectAll('boundary')
-                .data(topojson.feature(world, world.objects.countries).features)
+                .data((topojson.feature(world, world.objects.countries) as unknown as any).features)
                 .enter().append('path')
                 .attr('name', (d: any) => d.properties.name)
                 .attr('id', (d: any) => d.id)
-                .attr('d', path)
+                .attr('d', path as unknown as any)
                 .on('click', this.hideEventCard.bind(this));
 
             this.svg = svg;
@@ -277,7 +277,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                 coords.center.lat]);
 
             if (coordinates && this.zoom) {
-                this.zoom.translateTo(this.svg, ...coordinates);
+                this.zoom.translateTo(this.svg as unknown as any, ...coordinates);
             }
         }
     }
@@ -328,7 +328,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                         .translateExtent([topLeft, bottomRight]);
 
                     d3.select(this.target.nativeElement)
-                        .call(this.zoom);
+                        .call(this.zoom as unknown as any);
                 }
 
             }
@@ -355,7 +355,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
                     .attr('href', this.pointHref.bind(this))
                     .attr('x', -256)
                     .attr('y', -256)
-                    .attr('transform', (d: PointLocation) => this.pointTransform(d.where))
+                    .attr('transform', (d: PointLocation) => this.pointTransform(d.where) as unknown as any)
                     .attr('color', (d: PointLocation) => colors[d.color])
                     .attr('fill', (d: PointLocation) => colors[d.color])
                     .on('click', this.selectEvent.bind(this))
@@ -397,7 +397,7 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
 
                     await this.svg.transition()
                         .duration(750)
-                        .call(this.zoom.translateTo, ...coordinates)
+                        .call(this.zoom.translateTo as unknown as any, ...coordinates)
                         .end();
 
                     this.moving = false;
