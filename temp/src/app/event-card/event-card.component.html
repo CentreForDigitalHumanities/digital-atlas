@@ -1,6 +1,6 @@
 @if (event) {
   <div class="panel is-{{color}}">
-    <div class="panel-heading" [ngClass]="{'is-clickable': selected}" (click)="selected && goBack.next(undefined)">
+    <div class="panel-heading" [ngClass]="{'is-clickable': selected}" (click)="selected && goBack.emit(undefined)">
       <div class="columns">
         <div class="column" [innerHtml]="event.title || '...' | highlight:searchText">
         </div>

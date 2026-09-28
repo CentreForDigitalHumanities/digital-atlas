@@ -88,8 +88,8 @@ export class TimelineComponent implements OnChanges {
         );
     }
 
-    setCategoryFilter(categories: ('Life' | 'Work' | 'Legacy')[]): void {
-        const categoryKeys = {
+    setCategoryFilter(categories: string[]): void {
+        const categoryKeys: { [cat: string]: string } = {
             Life: 'life event',
             Work: 'work',
             Legacy: 'legacy'

@@ -44,8 +44,7 @@
     @if (selectedEvent) {
       <div class="block" #eventCard>
         <da-event-card [event]="selectedEvent.data" [includeAuthor]="authors?.length > 1"
-          (ready)="scrollToEventCard()" (jump)="jumpEvent($event)" [canJump]="true"
-          [isFirst]="selectedEvent.index == 0" [isLast]="selectedEvent.index == events.length - 1">
+          (ready)="scrollToEventCard()">
         </da-event-card>
       </div>
     }
@@ -53,6 +52,6 @@
 </div>
 
 <da-filter-menu [showPrevButton]="selectedEvent !== undefined && selectedEvent.index > 0"
-  [showNextButton]="selectedEvent !== undefined && selectedEvent.index < filteredEvents.length - 1"
+  [showNextButton]="selectedEvent !== undefined && filteredEvents !== undefined && selectedEvent.index < filteredEvents.length - 1"
   (jump)="jumpEvent($event)" (filter)="setCategoryFilter($event.categories)">
 </da-filter-menu>
