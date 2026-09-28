@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import * as _ from 'underscore';
 import { Author, CollectedData } from '../models/data';
 import { DataService } from '../services/data.service';
@@ -12,17 +12,16 @@ import { RouterLink } from '@angular/router';
     imports: [RouterLink],
 })
 export class IndexComponent implements OnInit {
-    authors?: CollectedData['authors'];
-
-    pictures?: { [name: string]: string };
+    authors = signal<CollectedData['authors'] | undefined>(undefined);
+    pictures = signal<{ [name: string]: string } | undefined>(undefined);;
 
     constructor(private dataService: DataService, private visualService: VisualService) {
     }
 
     async ngOnInit(): Promise<void> {
         const data = await this.dataService.getData();
-        this.authors = data.authors;
-        this.pictures = this.getPictures(data, this.authors);
+        this.authors.set(data.authors);
+        this.pictures.set(this.getPictures(data, data.authors));
     }
 
     getPictures(data: CollectedData, authors: Author[]): { [name: string]: string } {

@@ -1,8 +1,10 @@
+@let authorsCurrent = authors();
+@let picturesCurrent = pictures();
 <div class="section">
   <div class="container">
-    @if (authors) {
+    @if (authorsCurrent) {
       <div class="columns is-multiline is-centered">
-        @for (author of authors; track author.id) {
+        @for (author of authorsCurrent; track author.id) {
           <div class="column is-2">
             <div class="card is-radiusless is-{{author.color || 'blank'}}" [routerLink]="['/intellectual', author.id]">
               <header class="card-header">
@@ -10,10 +12,10 @@
                   {{author.name}}
                 </p>
               </header>
-              @if (pictures && pictures[author.name]) {
+              @if (picturesCurrent && picturesCurrent[author.name]) {
                 <div class="card-image">
                   <figure class="image is-square">
-                    <img [src]="pictures[author.name]" alt="" class="is-radiusless">
+                    <img [src]="picturesCurrent[author.name]" alt="" class="is-radiusless">
                   </figure>
                 </div>
               }
