@@ -33,6 +33,7 @@
     "@angular/build": "^22.2.0",
     "@angular/cli": "^22.2.0",
     "@angular/compiler-cli": "^22.2.0",
+    "@angular/localize": "^22.2.0",
     "@types/d3": "^7.4.3",
     "@types/topojson": "^3.2.6",
     "@types/underscore": "^1.13.0",
