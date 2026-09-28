@@ -2,7 +2,7 @@
   <div class="container">
     @if (authors) {
       <div class="columns is-multiline is-centered">
-        @for (author of authors; track author) {
+        @for (author of authors; track author.id) {
           <div class="column is-2">
             <div class="card is-radiusless is-{{author.color || 'blank'}}" [routerLink]="['/intellectual', author.id]">
               <header class="card-header">

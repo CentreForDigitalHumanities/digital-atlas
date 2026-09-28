@@ -17,9 +17,9 @@
     <div class="timeline-container">
       <div class="timeline-body">
         <div class="columns is-mobile">
-          @for (col of columns; track col) {
+          @for (col of columns; track $index) {
             <div class="column">
-              @for (tile of col; track tile) {
+              @for (tile of col; track $index) {
                 <div class="timeline-event-container"
                   [style.height.em]="getHeight(tile)">
                   @if (tile.event) {

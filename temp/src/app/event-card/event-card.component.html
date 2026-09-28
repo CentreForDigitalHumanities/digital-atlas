@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-    @for (author of authors; track author) {
+    @for (author of authors; track author.info.id) {
       <div class="panel-block author-link is-clickable"
         [routerLink]="['/intellectual', author.info.id]">
         <div class="column author-name has-text-right" [innerHtml]="author.info.name | highlight:searchText">

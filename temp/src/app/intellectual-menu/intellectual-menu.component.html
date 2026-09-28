@@ -1,6 +1,6 @@
 @if (data) {
   <div class="intellectual-list columns is-mobile">
-    @for (author of data.authors; track author) {
+    @for (author of data.authors; track author.id) {
       <div
         class="column author-column is-{{author.color}} has-text-centered is-clickable"
         [pTooltip]="tooltipMessage(author)" showDelay="600" [ngClass]="{'is-active': isActive(author)}"
