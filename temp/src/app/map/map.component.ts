@@ -302,7 +302,8 @@ export class MapComponent {
             const handleZoom = (e: any) => {
                 this.hideEventPreview();
                 d3.select('svg g')
-                    .attr('transform', e.transform);
+                    .attr('transform', e.transform)
+                    .attr("stroke-width", 1 / e.transform.k);
 
                 // update points overlap and size
                 this.zoomFactor = e.transform.k;
