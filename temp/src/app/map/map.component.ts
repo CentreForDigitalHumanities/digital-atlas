@@ -1,9 +1,9 @@
-import { Component, EventEmitter, ElementRef, HostListener, OnChanges, OnDestroy, Output, SimpleChanges, input, signal, viewChild, computed, effect } from '@angular/core';
-import { delay, Subscription, take } from 'rxjs';
+import { Component, EventEmitter, ElementRef, HostListener, Output, input, signal, viewChild, computed, effect } from '@angular/core';
+import { take } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import * as _ from 'underscore';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { faSquare } from '@fortawesome/free-solid-svg-icons';
 
