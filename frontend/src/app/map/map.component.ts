@@ -21,7 +21,7 @@ const worldPath = '/data/world-atlas-110m.json';
 
 const mapWidth = 962;
 const mapHeight = 550;
-const scaleExtent: [number, number] = [0.27, 3.5];
+const scaleExtent: [number, number] = [0.5, 3.5];
 const overlapThreshold = 15;
 const coords = {
     topLeft: {
@@ -243,8 +243,7 @@ export class MapComponent {
     private async drawMap(height: number): Promise<void> {
         const world = await d3.json<any>(environment.assets + worldPath);
 
-        const projection = d3.geoMercator()
-            .scale(400);
+        const projection = d3.geoNaturalEarth1().scale(400);
 
         if (this.target() && height) {
             const svg = d3.select(this.target().nativeElement)
