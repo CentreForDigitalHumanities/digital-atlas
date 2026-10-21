@@ -15,20 +15,19 @@
     </div>
 
     @if (dateRange) {
-      <div class="column years-column" matTooltip="Filter the events by year" matTooltipPosition="above">
-        <div class="field">
-          <div class="control">
-            <mat-slider [min]="minYear" [max]="maxYear">
-                <input name="range-start" matSliderStartThumb [(ngModel)]="selectedMin"
-                    (dragEnd)="emitFilters()">
-                <input name="range-end" matSliderEndThumb  [(ngModel)]="selectedMax"
-                    (dragEnd)="emitFilters()">
-            </mat-slider>
-          </div>
+      <div class="column years-column" matTooltip="Filter the events by year" matTooltipPosition="above"
+        style="padding-top: 0">
+        <div class="control">
+                <mat-slider [min]="minYear" [max]="maxYear">
+                    <input name="range-start" matSliderStartThumb [(ngModel)]="selectedMin"
+                        (dragEnd)="emitFilters()">
+                    <input name="range-end" matSliderEndThumb  [(ngModel)]="selectedMax"
+                        (dragEnd)="emitFilters()">
+                </mat-slider>
         </div>
         <div class="columns has-text-weight-bold">
-            <div class="column">{{selectedMin}}</div>
-            <div class="column" style="text-align: right;">{{selectedMax}}</div>
+            <div class="column" style="padding-top: 0">{{selectedMin}}</div>
+            <div class="column" style="padding-top: 0; text-align: right;">{{selectedMax}}</div>
         </div>
       </div>
     }
