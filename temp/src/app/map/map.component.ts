@@ -3,6 +3,7 @@ import { delay, Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import * as _ from 'underscore';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import { faSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -61,13 +62,11 @@ type PointLocation = {
     standalone: true,
     imports: [CommonModule, FontAwesomeModule, EventCardComponent, EventCardSelectorComponent]
 })
-export class MapComponent implements OnDestroy {
+export class MapComponent {
     private svg?: d3.Selection<SVGElement, any, any, any>;
     private projection?: d3.GeoProjection;
     private zoom?: d3.ZoomBehavior<Element, unknown>;
     private mapReady?: Promise<void>;
-    private height?: number;
-    private subscription = new Subscription();
 
     faSquare = faSquare;
 
@@ -105,18 +104,15 @@ export class MapComponent implements OnDestroy {
         this.icons = visualService.icons;
         this.iconList = Object.values(visualService.icons);
 
-        this.subscription.add(
-            this.visualService.getMainHeight().subscribe(height => {
-                this.height = height;
-                this.mapReady = this.drawMap();
-            }));
+        this.visualService.getMainHeight().pipe(
+            takeUntilDestroyed(),
+        ).subscribe(height => {
+            this.mapReady = this.drawMap(height);
+        });
 
         effect(() => this.updateMap(this.data()));
     }
 
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
 
     private async updateMap(data?: CollectedData) {
         if (data) {
@@ -243,18 +239,17 @@ export class MapComponent implements OnDestroy {
         return Infinity;
     }
 
-    private async drawMap(): Promise<void> {
+    private async drawMap(height: number): Promise<void> {
         const world = await d3.json<any>(environment.assets + worldPath);
 
         const projection = d3.geoMercator()
             .scale(400);
 
-
-        if (this.target() && this.height) {
+        if (this.target() && height) {
             const svg = d3.select(this.target().nativeElement)
                 .attr('width', '100%')
                 // warning! this reads the current height outside of this component
-                .attr('height', this.height)
+                .attr('height', height)
                 .attr('viewBox', `0 0 ${mapWidth} ${mapHeight}`);
 
             const path = d3.geoPath()
