@@ -1,4 +1,4 @@
-import { Component, EventEmitter, ElementRef, HostListener, OnChanges, OnDestroy, Output, SimpleChanges, input, signal, viewChild, computed } from '@angular/core';
+import { Component, EventEmitter, ElementRef, HostListener, OnChanges, OnDestroy, Output, SimpleChanges, input, signal, viewChild, computed, effect } from '@angular/core';
 import { delay, Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
@@ -61,7 +61,7 @@ type PointLocation = {
     standalone: true,
     imports: [CommonModule, FontAwesomeModule, EventCardComponent, EventCardSelectorComponent]
 })
-export class MapComponent implements OnDestroy, OnChanges {
+export class MapComponent implements OnDestroy {
     private svg?: d3.Selection<SVGElement, any, any, any>;
     private projection?: d3.GeoProjection;
     private zoom?: d3.ZoomBehavior<Element, unknown>;
@@ -110,14 +110,15 @@ export class MapComponent implements OnDestroy, OnChanges {
                 this.height = height;
                 this.mapReady = this.drawMap();
             }));
+
+        effect(() => this.updateMap(this.data()));
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 
-    async ngOnChanges(changes: SimpleChanges): Promise<void> {
-        const data = this.data();
+    private async updateMap(data?: CollectedData) {
         if (data) {
             await this.mapReady;
 
@@ -131,6 +132,7 @@ export class MapComponent implements OnDestroy, OnChanges {
             this.updatePoints();
         }
     }
+
 
     private locationFromEvent(event: LifeEvent | Work | Legacy): PointLocation | undefined {
         if (event.where) {
