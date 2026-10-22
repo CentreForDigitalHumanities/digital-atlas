@@ -1,5 +1,5 @@
-import { Component, EventEmitter, ElementRef, HostListener, Output, input, signal, viewChild, computed, effect } from '@angular/core';
-import { take } from 'rxjs';
+import { Component, EventEmitter, ElementRef, HostListener, Output, input, signal, viewChild, computed, effect, inject } from '@angular/core';
+import { lastValueFrom, Observable, take } from 'rxjs';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import * as _ from 'underscore';
@@ -16,6 +16,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { EventCardSelectorComponent } from '../event-card-selector/event-card-selector.component';
+import { HttpClient } from '@angular/common/http';
 
 const worldPath = '/data/world-atlas-110m.json';
 
@@ -95,6 +96,8 @@ export class MapComponent {
 
     private allPoints?: PointLocation[];
     private pointLocations = signal<PointLocation[]>([]);
+
+    private httpClient = inject(HttpClient);
 
     stackSizes = computed<number[]>(() =>
         _.uniq(this.pointLocations().map(point => point.stackSize))
@@ -240,8 +243,14 @@ export class MapComponent {
         return Infinity;
     }
 
+    private getWorld(): Observable<any> {
+        return this.httpClient.get(
+            environment.assets + worldPath
+        );
+    }
+
     private async drawMap(height: number): Promise<void> {
-        const world = await d3.json<any>(environment.assets + worldPath);
+        const world = await lastValueFrom(this.getWorld());
 
         const projection = d3.geoNaturalEarth1().scale(400);
 

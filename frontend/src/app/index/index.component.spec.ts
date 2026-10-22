@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IndexComponent } from './index.component';
 import { provideRouter } from '@angular/router';
+import { DataService } from '../services/data.service';
+import { DataServiceMock } from '../services/data.service.mock';
 
 describe('IndexComponent', () => {
     let component: IndexComponent;
@@ -12,6 +14,7 @@ describe('IndexComponent', () => {
             imports: [IndexComponent],
             providers: [
                 provideRouter([]),
+                { provide: DataService, useClass: DataServiceMock },
             ]
         })
             .compileComponents();
