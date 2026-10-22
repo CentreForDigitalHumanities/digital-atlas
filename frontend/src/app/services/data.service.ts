@@ -10,9 +10,9 @@ import { DatesService } from './dates.service';
 export class DataService {
     private dataPath = '/data/data.json';
 
-    private data: CollectedData;
+    private data?: CollectedData;
 
-    private promiseData: Promise<CollectedData>;
+    private promiseData?: Promise<CollectedData>;
 
     constructor(private datesService: DatesService) { }
 
@@ -30,12 +30,12 @@ export class DataService {
         return this.promiseData;
     }
 
-    filterData(data, authors: Author[], categories: string[], dateRange: number[]): CollectedData {
+    filterData(data: any, authors: Author[], categories: string[], dateRange?: number[]): CollectedData {
         const authorIds = authors.map(author => author.id);
 
         let lifeEvents: LifeEvent[];
         if (categories.includes('Life')) {
-            lifeEvents = data.lifeEvents.filter(event =>
+            lifeEvents = data.lifeEvents.filter((event: any) =>
                 authorIds.includes(event.authorId)
                 &&
                 this.datesService.eventInDateRange(event, dateRange)
@@ -46,7 +46,7 @@ export class DataService {
 
         let works: Work[];
         if (categories.includes('Work')) {
-            works = data.works.filter(event =>
+            works = data.works.filter((event: any) =>
                 authorIds.includes(event.authorId)
                 &&
                 this.datesService.eventInDateRange(event, dateRange)
@@ -57,7 +57,7 @@ export class DataService {
 
         let legacies: Legacy[];
         if (categories.includes('Legacy')) {
-            legacies = data.legacies.filter(event =>
+            legacies = data.legacies.filter((event: any) =>
                 _.any(event.aboutIds, id => authorIds.includes(id))
                 &&
                 this.datesService.eventInDateRange(event, dateRange)
@@ -104,22 +104,25 @@ export class DataService {
         if (input && input.length) {
             return input;
         }
+        return undefined;
     }
 
-    parseDate(input?: string): PartialDate {
+    parseDate(input?: string): PartialDate | undefined {
         if (input && input.length) {
             return new PartialDate(input);
         }
+        return undefined;
     }
 
     parseStringList(input?: string): string[] {
         if (input && input.length) {
             return input.split(',').map(item => item.trim());
         }
+        return [];
     }
 
     parseCategory(input?: string): Category {
-        if ((Object.values(Categories) as string[]).includes(input)) {
+        if (input && (Object.values(Categories) as string[]).includes(input)) {
             return input as Category;
         }
         return Categories.Other;
@@ -133,17 +136,18 @@ export class DataService {
         return process(a) === process(b);
     }
 
-    findLocation(name: string, locations: Location[]): Location {
+    findLocation(name: string, locations: Location[]): Location | undefined {
         if (name) {
             return locations.find(location => this.matchNames(location.name, name));
         }
+        return undefined;
     }
 
     findAuthor(name: string, authors: Author[]): Author {
         return authors.find(author => this.matchNames(author.name, name)) || authors[0];
     }
 
-    findAuthorById(id: number, authors: Author[]): Author {
+    findAuthorById(id: number, authors: Author[]): Author | undefined {
         return authors.find(author => author.id === id);
     }
 
@@ -164,7 +168,7 @@ export class DataService {
             placeOfDeath: this.findLocation(item.place_of_death, locations),
             pictures: this.parseStringList(item.pictures),
             color: item.color
-        }));
+        })) as Author[];
     }
 
     parseWorks(workData: any[], locations: Location[], authors: Author[]): Work[] {

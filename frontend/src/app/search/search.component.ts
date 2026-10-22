@@ -6,12 +6,17 @@ import { LifeEvent, Work, Legacy } from '../models/data';
 import { DataService } from '../services/data.service';
 import { EventCard, EventCardService } from '../services/event-card.service';
 import { HighlightService } from '../services/highlight.service';
-import { TitleService } from '../services/title.service';
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { EventCardComponent } from '../event-card/event-card.component';
+import { EventCardSelectorComponent } from '../event-card-selector/event-card-selector.component';
 
 @Component({
     selector: 'da-search',
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss']
+    styleUrls: ['./search.component.scss'],
+    standalone: true,
+    imports: [FormsModule, FontAwesomeModule, EventCardComponent, EventCardSelectorComponent],
 })
 export class SearchComponent implements OnInit {
     faSearch = faSearch;
@@ -27,17 +32,15 @@ export class SearchComponent implements OnInit {
     }
 
     events: (LifeEvent | Work | Legacy)[] = [];
-    selectedEvent: LifeEvent | Work | Legacy;
+    selectedEvent?: LifeEvent | Work | Legacy;
 
-    private allCards: EventCard[];
+    private allCards: EventCard[] = [];
 
     constructor(
         private dataService: DataService,
         private eventCardService: EventCardService,
         private highlightService: HighlightService,
-        titleService: TitleService) {
-        titleService.setTitle('Search');
-    }
+    ) { }
 
     ngOnInit(): void {
         this.subscription.add(

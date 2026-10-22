@@ -1,37 +1,19 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { animations, showState } from '../animations';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
-    animations,
     selector: 'da-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
+    imports: [CommonModule, RouterLink]
 })
-export class MenuComponent implements OnInit {
-    burgerShow: showState;
+export class MenuComponent {
     burgerActive = false;
 
-    constructor(private ngZone: NgZone) { }
-
-    ngOnInit(): void {
-    }
+    constructor() { }
 
     toggleBurger(): void {
-        if (!this.burgerActive) {
-            // make it active to make it visible (add a class to
-            // override it being hidden for smaller screens)
-            this.burgerActive = true;
-            // immediately hide it
-            this.burgerShow = 'hide';
-            setTimeout(() => {
-                this.ngZone.run(() => {
-                    // trigger the transition
-                    this.burgerShow = 'show';
-                });
-            });
-            return;
-        }
-
-        this.burgerShow = this.burgerShow === 'show' ? 'hide' : 'show';
+        this.burgerActive = !this.burgerActive;
     }
 }

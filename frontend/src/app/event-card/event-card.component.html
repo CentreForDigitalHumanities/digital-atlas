@@ -1,57 +1,77 @@
-<div class="panel is-{{color}}" *ngIf="event">
-    <div class="panel-heading" [ngClass]="{'is-clickable': selected}" (click)="selected && goBack.next()">
-        <div class="columns">
-            <div class="column" [innerHtml]="event.title || '...' | highlight:searchText">
-            </div>
-            <div class="column is-narrow">
-                <span class="icon back-button" pTooltip="go back" *ngIf="selected">
-                    <fa-icon [icon]="faEllipsisV"></fa-icon>
-                </span>
-            </div>
+@if (event) {
+  <div class="panel is-{{color}}">
+    <div class="panel-heading" [ngClass]="{'is-clickable': selected}" (click)="selected && goBack.emit(undefined)">
+      <div class="columns">
+        <div class="column" [innerHtml]="event.title || '...' | highlight:searchText">
         </div>
+        <div class="column is-narrow">
+          @if (selected) {
+            <span class="icon back-button" matTooltip="go back">
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </span>
+          }
+        </div>
+      </div>
     </div>
-    <div class="panel-block author-link is-clickable" *ngFor="let author of authors"
+    @for (author of authors; track author.info.id) {
+      <div class="panel-block author-link is-clickable"
         [routerLink]="['/intellectual', author.info.id]">
         <div class="column author-name has-text-right" [innerHtml]="author.info.name | highlight:searchText">
         </div>
         <div class="column is-narrow">
-            <figure class="image is-square is-32x32 author-image" *ngIf="author.picture">
-                <img class="is-rounded is-{{author.color}}" [src]="author.picture">
+          @if (author.picture) {
+            <figure class="image is-square is-32x32 author-image">
+              <img class="is-rounded is-{{author.color}}" [src]="author.picture">
             </figure>
+          }
         </div>
-    </div>
-    <div class="panel-block" *ngIf="picture">
+      </div>
+    }
+    @if (picture) {
+      <div class="panel-block">
         <figure class="image">
-            <img [src]="picture" alt="" class="is-radiusless">
+          <img [src]="picture" alt="" class="is-radiusless">
         </figure>
-    </div>
-    <div class="panel-block description" *ngIf="event.description">
+      </div>
+    }
+    @if (event.description) {
+      <div class="panel-block description">
         <div class="content">
-            <p [innerHtml]="event.description | highlight:searchText"></p>
+          <p [innerHtml]="event.description | highlight:searchText"></p>
         </div>
-    </div>
-    <a class="panel-block link" *ngIf="formattedUrl" [href]="event.url" target="_blank">
+      </div>
+    }
+    @if (formattedUrl) {
+      <a class="panel-block link" [href]="event.url" target="_blank">
         <span class="panel-icon">
-            <fa-icon [icon]="faLink"></fa-icon>
+          <fa-icon [icon]="faLink"></fa-icon>
         </span>
         {{formattedUrl}}
-    </a>
-    <p class="panel-block" *ngIf="categoryIcon">
+      </a>
+    }
+    @if (categoryIcon) {
+      <p class="panel-block">
         <span class="panel-icon">
-            <fa-icon [icon]="categoryIcon"></fa-icon>
+          <fa-icon [icon]="categoryIcon"></fa-icon>
         </span>
         <span [innerHtml]="event.type | titlecase | highlight:searchText"></span>
-    </p>
-    <p class="panel-block" *ngIf="formattedDate">
+      </p>
+    }
+    @if (formattedDate) {
+      <p class="panel-block">
         <span class="panel-icon">
-            <fa-icon [icon]="faCalendar"></fa-icon>
+          <fa-icon [icon]="faCalendar"></fa-icon>
         </span>
         <span [innerHtml]="formattedDate | highlight:searchText"></span>
-    </p>
-    <p class="panel-block" *ngIf="event.where">
+      </p>
+    }
+    @if (event.where) {
+      <p class="panel-block">
         <span class="panel-icon">
-            <fa-icon [icon]="faMapMarker"></fa-icon>
+          <fa-icon [icon]="faMapMarker"></fa-icon>
         </span>
         <span [innerHtml]="event.where?.name | highlight:searchText"></span>
-    </p>
-</div>
+      </p>
+    }
+  </div>
+}

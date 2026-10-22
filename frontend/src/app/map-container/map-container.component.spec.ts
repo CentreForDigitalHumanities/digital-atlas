@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MapComponent } from '../map/map.component';
 
 import { MapContainerComponent } from './map-container.component';
+import { DataService } from '../services/data.service';
+import { DataServiceMock } from '../services/data.service.mock';
+import { provideRouter } from '@angular/router';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
 
 describe('MapContainerComponent', () => {
     let component: MapContainerComponent;
@@ -10,8 +13,12 @@ describe('MapContainerComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [MapContainerComponent, MapComponent],
-            imports: [FontAwesomeModule]
+            imports: [MapContainerComponent],
+            providers: [
+                { provide: DataService, useClass: DataServiceMock },
+                provideRouter([]),
+                provideHttpClientTesting(),
+            ]
         })
             .compileComponents();
     });

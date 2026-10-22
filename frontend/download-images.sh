@@ -6,8 +6,8 @@ IMAGES ARE NOT FOR REDISTRIBUTION
 """
 
 export STATIC_URL=https://dhstatic.hum.uu.nl/digital-atlas
+rm -rf src/assets/img
 mkdir -p src/assets/img
 cd src/assets/img
-rm *
 curl --fail "$STATIC_URL/images.zip" -O
 unzip images.zip

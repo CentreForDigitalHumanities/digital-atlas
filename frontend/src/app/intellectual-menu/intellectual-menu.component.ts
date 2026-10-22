@@ -6,27 +6,33 @@ import * as _ from 'underscore';
 import { Author, CollectedData } from '../models/data';
 import { DataService } from '../services/data.service';
 import { VisualService } from '../services/visual.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 const doubleClickTimeout = 500;
 
 @Component({
     selector: 'da-intellectual-menu',
     templateUrl: './intellectual-menu.component.html',
-    styleUrls: ['./intellectual-menu.component.scss']
+    styleUrls: ['./intellectual-menu.component.scss'],
+    standalone: true,
+    imports: [CommonModule, FontAwesomeModule, MatTooltipModule],
 })
 export class IntellectualMenuComponent implements OnInit {
     private lastClick = new Date().getTime();
     private lastAuthorClick = -1;
 
-    data: CollectedData;
+    data?: CollectedData;
 
     icons = {
         hide: faEyeSlash,
         show: faEye,
     };
-    pictures: { [authorId: number]: string };
+    pictures?: { [authorId: number]: string | undefined };
 
-    context: string;
+    context?: string;
 
     authorSelections: { [index: number]: boolean } = {};
     @Output() selectedAuthors = new BehaviorSubject<Author[]>([]);
@@ -34,7 +40,7 @@ export class IntellectualMenuComponent implements OnInit {
     constructor(private dataService: DataService, private visualService: VisualService, private route: ActivatedRoute) { }
 
     async ngOnInit(): Promise<void> {
-        this.context = this.route.snapshot.url[0].path;
+        this.context = this.route.snapshot.url[0]?.path;
         this.data = await this.dataService.getData();
         this.data.authors.forEach(author => this.authorSelections[author.id] = true);
         this.updateAuthorSelection();
@@ -42,7 +48,7 @@ export class IntellectualMenuComponent implements OnInit {
 
     }
 
-    getPictures(data: CollectedData): { [authorId: number]: string } {
+    getPictures(data: CollectedData): { [authorId: number]: string | undefined } {
         const authors = data.authors;
         const authorsById = _.indexBy(authors, author => author.id);
         const picturesById = _.mapObject(authorsById, author => this.visualService.getPictureSource(author, data));
@@ -57,7 +63,8 @@ export class IntellectualMenuComponent implements OnInit {
         if (exclusive) {
             const current = this.authorSelections[author.id];
             for (const id of Object.keys(this.authorSelections)) {
-                this.authorSelections[id] = current;
+                const idAsInt = parseInt(id, 10);
+                this.authorSelections[idAsInt] = current;
             }
             this.authorSelections[author.id] = !current;
             this.lastAuthorClick = -1;
@@ -70,9 +77,11 @@ export class IntellectualMenuComponent implements OnInit {
     }
 
     updateAuthorSelection(): void {
-        const authors = this.data.authors.filter(author =>
-            this.authorSelections[author.id]);
-        this.selectedAuthors.next(authors);
+        if (this.data) {
+            const authors = this.data.authors.filter(author =>
+                this.authorSelections[author.id]);
+            this.selectedAuthors.next(authors);
+        }
     }
 
     isActive(author: Author): boolean {

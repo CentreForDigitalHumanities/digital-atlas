@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { EventCardSelectorComponent } from './event-card-selector.component';
+import { DataService } from '../services/data.service';
+import { DataServiceMock } from '../services/data.service.mock';
 
 describe('EventCardSelectorComponent', () => {
     let component: EventCardSelectorComponent;
@@ -9,8 +10,10 @@ describe('EventCardSelectorComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [EventCardSelectorComponent],
-            imports: [FontAwesomeModule]
+            imports: [EventCardSelectorComponent],
+            providers: [
+                { provide: DataService, useClass: DataServiceMock },
+            ]
         })
             .compileComponents();
     });

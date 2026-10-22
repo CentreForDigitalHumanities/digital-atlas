@@ -11,7 +11,7 @@ export interface EventCard {
     category: Categories;
     color: string;
     date: string;
-    picture: string;
+    picture: string | undefined;
     categoryIcon: IconDefinition;
     authors: Author[];
     formattedUrl?: string;
@@ -42,7 +42,7 @@ export class EventCardService {
 
     private getAuthors(event: LifeEvent | Work | Legacy, data: CollectedData): Author[] {
         const authorIds = (event as Legacy).aboutIds || [(event as LifeEvent | Work).authorId];
-        return authorIds.map(id => data.authors.find(author => author.id === id));
+        return authorIds.map(id => data.authors.find(author => author.id === id)).filter(author => !!author);
     }
 
     private formatUrl(url?: string): string | undefined {

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { CheckboxesComponent } from './checkboxes.component';
 
@@ -9,8 +8,7 @@ describe('CheckboxesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CheckboxesComponent ],
-      imports: [FontAwesomeModule]
+      imports: [CheckboxesComponent]
     })
     .compileComponents();
   });

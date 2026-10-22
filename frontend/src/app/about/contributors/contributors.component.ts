@@ -1,18 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { TitleService } from '../../services/title.service';
+import { Component } from '@angular/core';
+
 
 @Component({
     selector: 'da-contributors',
     templateUrl: './contributors.component.html',
-    styleUrls: ['./contributors.component.scss']
+    styleUrls: ['./contributors.component.scss'],
 })
-export class ContributorsComponent implements OnInit {
-
-    constructor(titleService: TitleService) {
-        titleService.setTitle('Contributors');
-    }
-
-    ngOnInit(): void {
-    }
-
+export class ContributorsComponent {
 }

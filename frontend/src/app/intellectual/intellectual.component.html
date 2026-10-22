@@ -1,53 +1,73 @@
+@let auth = author();
 <div class="section">
-<div class="container">
-<ng-container *ngIf="author">
-    <div class="columns">
+  <div class="container">
+    @if (auth) {
+      <div class="columns">
         <div class="column is-one-quarter">
-            <div class="block">
-                <div class="card is-radiusless is-{{author.color}}">
-                    <header class="card-header">
-                        <p class="card-header-title">
-                            {{author.name}}
-                        </p>
-                    </header>
-                    <div class="card-image" *ngIf="pictureFile">
-                        <figure class="image">
-                            <img [src]="pictureFile" alt="" class="is-radiusless">
-                        </figure>
-                    </div>
+          <div class="block">
+            <div class="card is-radiusless is-{{auth.color}}">
+              <header class="card-header">
+                <p class="card-header-title">
+                  {{auth.name}}
+                </p>
+              </header>
+              @let picSrc = pictureFile();
+              @if (picSrc) {
+                <div class="card-image">
+                  <figure class="image">
+                    <img [src]="picSrc" alt="" class="is-radiusless">
+                  </figure>
                 </div>
+              }
             </div>
-
-            <div class="block has-text-grey is-italic is-small" *ngIf="picture">
-                © photograph by {{picture.author}} ({{picture.license}})
+          </div>
+          @let pic = picture();
+          @if (pic) {
+            <div class="block has-text-grey is-italic is-small">
+              © photograph by {{pic.author}} ({{pic.license}})
             </div>
-
-            <div class="block has-text-centered" *ngIf="author.dateOfBirth || author.placeOfBirth">
-                <div class="heading">born</div>
-                <span *ngIf="author.dateOfBirth">{{author.dateOfBirth}} </span>
-                <span *ngIf="author.dateOfBirth && author.placeOfBirth">‒ </span>
-                <span *ngIf="author.placeOfBirth">{{author.placeOfBirth.name}}</span>
+          }
+          @if (auth.dateOfBirth || auth.placeOfBirth) {
+            <div class="block has-text-centered">
+              <div class="heading">born</div>
+              @if (auth.dateOfBirth) {
+                <span>{{auth.dateOfBirth}} </span>
+              }
+              @if (auth.dateOfBirth && auth.placeOfBirth) {
+                <span>‒ </span>
+              }
+              @if (auth.placeOfBirth) {
+                <span>{{auth.placeOfBirth.name}}</span>
+              }
             </div>
-
-            <div class="block has-text-centered" *ngIf="author.dateOfDeath">
-                <div class="heading">died</div>
-                <span *ngIf="author.dateOfDeath">{{author.dateOfDeath}} </span>
-                <span *ngIf="author.dateOfDeath && author.placeOfDeath">‒ </span>
-                <span *ngIf="author.placeOfDeath">{{author.placeOfDeath.name}}</span>
+          }
+          @if (auth.dateOfDeath) {
+            <div class="block has-text-centered">
+              <div class="heading">died</div>
+              @if (auth.dateOfDeath) {
+                <span>{{auth.dateOfDeath}} </span>
+              }
+              @if (auth.dateOfDeath && auth.placeOfDeath) {
+                <span>‒ </span>
+              }
+              @if (auth.placeOfDeath) {
+                <span>{{auth.placeOfDeath.name}}</span>
+              }
             </div>
-
-            <div class="block has-text-justified" *ngIf="author.description">
-                {{author.description}}
+          }
+          @if (auth.description) {
+            <div class="block has-text-justified">
+              {{auth.description}}
             </div>
+          }
         </div>
-
         <div class="column">
-            <div class="block">
-                <h2 class="subtitle is-3 mb-1">Timeline</h2>
-            </div>
-            <da-timeline [authors]="[author]"></da-timeline>
+          <div class="block">
+            <h2 class="subtitle is-3 mb-1">Timeline</h2>
+          </div>
+          <da-timeline [authors]="[auth]" [narrowCardColumn]="false"></da-timeline>
         </div>
-    </div>
-</ng-container>
-</div>
+      </div>
+    }
+  </div>
 </div>

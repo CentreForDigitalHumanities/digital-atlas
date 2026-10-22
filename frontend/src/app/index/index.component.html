@@ -1,20 +1,28 @@
+@let authorsCurrent = authors();
+@let picturesCurrent = pictures();
 <div class="section">
-<div class="container">
-<div class="columns is-multiline is-centered" *ngIf="authors">
-    <div class="column is-2" *ngFor="let author of authors">
-        <div class="card is-radiusless is-{{author.color || 'blank'}}" [routerLink]="['/intellectual', author.id]">
-            <header class="card-header">
+  <div class="container">
+    @if (authorsCurrent) {
+      <div class="columns is-multiline is-centered">
+        @for (author of authorsCurrent; track author.id) {
+          <div class="column is-2">
+            <div class="card is-radiusless is-{{author.color || 'blank'}}" [routerLink]="['/intellectual', author.id]">
+              <header class="card-header">
                 <p class="card-header-title">
-                    {{author.name}}
+                  {{author.name}}
                 </p>
-            </header>
-            <div class="card-image" *ngIf="pictures[author.name]">
-                <figure class="image is-square">
-                    <img [src]="pictures[author.name]" alt="" class="is-radiusless">
-                </figure>
+              </header>
+              @if (picturesCurrent && picturesCurrent[author.name]) {
+                <div class="card-image">
+                  <figure class="image is-square">
+                    <img [src]="picturesCurrent[author.name]" alt="" class="is-radiusless">
+                  </figure>
+                </div>
+              }
             </div>
-        </div>
-    </div>
-</div>
-</div>
+          </div>
+        }
+      </div>
+    }
+  </div>
 </div>

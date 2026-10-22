@@ -1,18 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { TitleService } from '../services/title.service';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'da-about',
     templateUrl: './about.component.html',
-    styleUrls: ['./about.component.scss']
+    styleUrls: ['./about.component.scss'],
+    imports: [RouterLink],
 })
-export class AboutComponent implements OnInit {
-
-    constructor(titleService: TitleService) {
-        titleService.setTitle('About');
-    }
-
-    ngOnInit(): void {
-    }
+export class AboutComponent {
 
 }

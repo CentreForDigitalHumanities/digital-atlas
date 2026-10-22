@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { MapComponent } from './map.component';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('MapComponent', () => {
     let component: MapComponent;
@@ -9,8 +10,10 @@ describe('MapComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [MapComponent],
-            imports: [FontAwesomeModule]
+            imports: [MapComponent, FontAwesomeModule],
+            providers: [
+                provideHttpClientTesting(),
+            ]
         })
             .compileComponents();
     });

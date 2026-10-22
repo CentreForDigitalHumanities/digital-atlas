@@ -3,7 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HighlightService } from './services/highlight.service';
 
 @Pipe({
-    name: 'highlight'
+    name: 'highlight',
 })
 export class HighlightPipe implements PipeTransform {
     constructor(private sanitizer: DomSanitizer, private highlightService: HighlightService) {
@@ -12,7 +12,9 @@ export class HighlightPipe implements PipeTransform {
     /**
      * Transforms a text to highlight all the text matching the specified query.
      */
-    transform(text: string, query: string): SafeHtml {
+    transform(text: string | undefined, query: string | undefined): SafeHtml {
+      if (!text )  { return '' }
+      if ( !query) { return text }
         const parts = this.highlightService.queryText(text, query);
         const highlightedText = parts.map(part => {
             const sanitizedText = this.sanitizedLineBreaks(part.text, '<br />');

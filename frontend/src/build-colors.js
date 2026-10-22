@@ -2,7 +2,7 @@ const colors = require('./colors.json');
 const fs = require('fs')
 
 let sassContent = '$colors: (\n';
-let tsContent = 'export const colors = {\n';
+let tsContent = 'export const colors: Record<string, string> = {\n';
 for (let color of Object.keys(colors)) {
     sassContent += `  "${color}": ${colors[color]},\n`;
     tsContent += `    ${color}: '${colors[color]}',\n`;

@@ -1,20 +1,22 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, ElementRef, viewChild, ViewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { MenuComponent } from './menu/menu.component';
+import { FooterComponent } from './footer/footer.component';
 import { Subscription } from 'rxjs';
 import { VisualService } from './services/visual.service';
 
 @Component({
-    selector: 'da-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    imports: [RouterOutlet, MenuComponent, FooterComponent],
+    selector: 'app-root',
+    styleUrl: './app.scss',
+    templateUrl: './app.html',
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class App {
     private subscription = new Subscription();
     title = 'digital-atlas';
     compactFooter = false;
 
-    @ViewChild('main')
-    main: ElementRef<HTMLElement>;
+    main = viewChild.required<ElementRef<HTMLElement>>('main');
 
     constructor(private visualService: VisualService, router: Router) {
         this.subscription.add(router.events.subscribe(event => {
@@ -29,7 +31,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.visualService.setMainHeight(this.main.nativeElement.clientHeight);
+        setTimeout(() => {
+            if (this.main) {
+                this.visualService.setMainHeight(this.main().nativeElement.clientHeight);
+            }
+        })
     }
 
     ngOnDestroy(): void {

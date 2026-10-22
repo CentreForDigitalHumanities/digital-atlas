@@ -18,7 +18,7 @@ export interface Location {
 }
 
 export class PartialDate {
-    year: number;
+    year?: number;
 
     // 1-based month
     month?: number;
@@ -31,9 +31,11 @@ export class PartialDate {
         switch (parts.length) {
             case 3:
                 this.day = parseInt(parts[2], 10);
+                break;
             /* falls through */
             case 2:
                 this.month = parseInt(parts[1], 10);
+                break;
             /* falls through */
             case 1:
                 this.year = parseInt(parts[0], 10);
@@ -50,20 +52,22 @@ export class PartialDate {
         } else if (b && !a) {
             return 1;
         }
-        if (a.year < b.year) {
-            return -1;
-        } else if (a.year > b.year) {
-            return 1;
+        if (a?.year && b?.year) {
+            if (a.year < b.year) {
+                return -1;
+            } else if (a.year > b.year) {
+                return 1;
+            }
         }
 
-        const [firstMonth, secondMonth] = [a.month || 1, b.month || 1];
+        const [firstMonth, secondMonth] = [a?.month || 1, b?.month || 1];
         if (firstMonth < secondMonth) {
             return -1;
         } else if (firstMonth > secondMonth) {
             return 1;
         }
 
-        const [firstDay, secondDay] = [a.day || 1, b.day || 1];
+        const [firstDay, secondDay] = [a?.day || 1, b?.day || 1];
         if (firstDay < secondDay) {
             return -1;
         } else if (firstDay > secondDay) {
@@ -74,29 +78,36 @@ export class PartialDate {
     }
 
     toString(): string {
-        if (this.day !== undefined) {
+        if (this.day !== undefined && this.month !== undefined && this.year !== undefined) {
             return `${this.monthName()} ${this.day}, ${this.year}`;
-        } else if (this.month !== undefined) {
+        } else if (this.month !== undefined && this.year !== undefined) {
             return `${this.monthName()} ${this.year}`;
+        } else if (this.year !== undefined) {
+            return `${this.year}`
+        } else {
+            return 'unknown'
         }
-        return `${this.year}`;
     }
 
     monthName(): string {
-        return {
-            1: 'January',
-            2: 'February',
-            3: 'March',
-            4: 'April',
-            5: 'May',
-            6: 'June',
-            7: 'July',
-            8: 'August',
-            9: 'September',
-            10: 'October',
-            11: 'November',
-            12: 'December'
-        }[this.month];
+        if (this.month) {
+            return {
+                1: 'January',
+                2: 'February',
+                3: 'March',
+                4: 'April',
+                5: 'May',
+                6: 'June',
+                7: 'July',
+                8: 'August',
+                9: 'September',
+                10: 'October',
+                11: 'November',
+                12: 'December'
+            }[this.month] || '';
+        } else {
+            return '';
+        }
     }
 }
 

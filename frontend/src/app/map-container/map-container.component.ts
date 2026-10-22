@@ -5,26 +5,29 @@ import { MapComponent } from '../map/map.component';
 import { Author, CollectedData, Legacy, LifeEvent, Work } from '../models/data';
 import { DataService } from '../services/data.service';
 import { DatesService } from '../services/dates.service';
-import { TitleService } from '../services/title.service';
+import { IntellectualMenuComponent } from '../intellectual-menu/intellectual-menu.component';
+import { FilterMenuComponent } from '../filter-menu/filter-menu.component';
 
 @Component({
     selector: 'da-map-container',
     templateUrl: './map-container.component.html',
-    styleUrls: ['./map-container.component.scss']
+    styleUrls: ['./map-container.component.scss'],
+    standalone: true,
+    imports: [IntellectualMenuComponent, MapComponent, FilterMenuComponent],
 })
 export class MapContainerComponent implements OnInit {
     faArrowLeft = faArrowLeft;
     faArrowRight = faArrowRight;
     faFilter = faFilter;
 
-    data: CollectedData;
-    filteredData: CollectedData;
+    data?: CollectedData;
+    filteredData?: CollectedData;
 
     categories = ['Life', 'Work', 'Legacy'];
-    minYear: number;
-    maxYear: number;
+    minYear?: number;
+    maxYear?: number;
 
-    authorSelections: { [index: number]: boolean };
+    authorSelections?: { [index: number]: boolean };
 
     selectedCategories: string[] = [];
     selectedAuthors: Author[] = [];
@@ -33,13 +36,12 @@ export class MapContainerComponent implements OnInit {
     showPrevButton = false;
     showNextButton = false;
 
-    pictures: { [authorId: number]: string };
+    pictures?: { [authorId: number]: string };
 
     @ViewChild(MapComponent)
     map!: MapComponent;
 
-    constructor(private dataService: DataService, private datesService: DatesService, titleService: TitleService) {
-        titleService.setTitle('Map');
+    constructor(private dataService: DataService, private datesService: DatesService) {
     }
 
     ngOnInit(): void {

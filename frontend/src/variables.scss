@@ -10,6 +10,10 @@ $light: #F2F2F2;
 $cyan: #62959C;
 $green: #557C55;
 
-@import '~bulma/sass/utilities/_all';
+@import 'bulma/sass/utilities/_all';
 
 $intellectual-list-height: 6em;
+
+$nwoLogoHeight: 90px;
+$compactScale: 0.7;
+$compactFooterSize: $compactScale * $nwoLogoHeight + 3px;

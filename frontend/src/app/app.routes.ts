@@ -1,34 +1,40 @@
 import { Routes } from '@angular/router';
-import { AboutComponent } from './about/about.component';
 import { ContributorsComponent } from './about/contributors/contributors.component';
 import { PinComponent } from './about/pin/pin.component';
-import { CompleteTimelineComponent } from './complete-timeline/complete-timeline.component';
-
+import { AboutComponent } from './about/about.component';
 import { IndexComponent } from './index/index.component';
+import { baseTitle, formatTitle } from './title';
 import { IntellectualComponent } from './intellectual/intellectual.component';
-import { MapContainerComponent } from './map-container/map-container.component';
 import { SearchComponent } from './search/search.component';
+import { CompleteTimelineComponent } from './complete-timeline/complete-timeline.component';
+import { MapContainerComponent } from './map-container/map-container.component';
 
-const routes: Routes = [
+
+export const routes: Routes = [
     {
         path: 'index',
         component: IndexComponent,
+        title: formatTitle('Intellectuals'),
     },
     {
         path: 'intellectual/:id',
         component: IntellectualComponent,
+        title: baseTitle,
     },
     {
         path: 'map',
-        component: MapContainerComponent
+        component: MapContainerComponent,
+        title: formatTitle('Map'),
     },
     {
         path: 'timeline',
         component: CompleteTimelineComponent,
+        title: formatTitle('Timeline'),
     },
     {
         path: 'search',
         component: SearchComponent,
+        title: formatTitle('Search'),
     },
     {
         path: 'about',
@@ -43,6 +49,7 @@ const routes: Routes = [
             },
             {
                 path: '',
+                title: formatTitle('About'),
                 component: AboutComponent,
             }
         ]
@@ -53,5 +60,3 @@ const routes: Routes = [
         pathMatch: 'full'
     }
 ];
-
-export { routes };

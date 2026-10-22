@@ -1,32 +1,38 @@
-<ng-container *ngIf="authors">
-    <div class="panel is-{{author.info.color}}" *ngFor="let author of authors">
-        <div class="panel-block author-link" [ngClass]="{'is-clickable': authors.length > 1}"
-            (click)="toggleAuthor(author)">
-            <div class="column author-name has-text-right" [innerHtml]="author.info.name | highlight:searchText">
-            </div>
-            <div class="column is-narrow" *ngIf="author.picture">
-                <figure class="image is-square is-32x32 author-image">
-                    <img class="is-rounded" [src]="author.picture">
-                </figure>
-            </div>
+@for (author of authors(); track author.info.id) {
+    <div class="panel is-{{author.info.color}}">
+      <div class="panel-block author-link" [ngClass]="{'is-clickable': authors().length > 1}"
+        (click)="toggleAuthor(author)">
+        <div class="column author-name has-text-right" [innerHtml]="author.info.name | highlight:searchText()">
         </div>
-        <ng-container *ngIf="author.show">
-            <a class="panel-block is-clickable" *ngFor="let event of author.events" (click)="selected.next(event.info)">
-                <span class="panel-icon">
-                    <fa-icon [icon]="event.categoryIcon"></fa-icon>
+        @if (author.picture) {
+          <div class="column is-narrow">
+            <figure class="image is-square is-32x32 author-image">
+              <img class="is-rounded" [src]="author.picture">
+            </figure>
+          </div>
+        }
+      </div>
+      @if (author.show) {
+        @for (event of author.events; track $index) {
+          <a class="panel-block is-clickable" (click)="selected.next(event.info)">
+            <span class="panel-icon">
+              <fa-icon [icon]="event.categoryIcon"></fa-icon>
+            </span>
+            <div class="columns event-item">
+              <div class="column" [innerHtml]="event.title | highlight:searchText()">
+              </div>
+              <div class="column is-narrow has-text-right">
+                <span class="tag date-tag" [innerHtml]="event.date | highlight:searchText()">
                 </span>
-                <div class="columns event-item">
-                    <div class="column" [innerHtml]="event.title | highlight:searchText">
-                    </div>
-                    <div class="column is-narrow has-text-right">
-                        <span class="tag date-tag" [innerHtml]="event.date | highlight:searchText">
-                        </span>
-                    </div>
-                </div>
-            </a>
-        </ng-container>
-        <a class="panel-block is-clickable" *ngIf="!author.show" (click)="author.show = !author.show">
-            <i>show {{author.events.length}} events...</i>
+              </div>
+            </div>
+          </a>
+        }
+      }
+      @if (!author.show) {
+        <a class="panel-block is-clickable" (click)="author.show = !author.show">
+          <i>show {{author.events.length}} events...</i>
         </a>
+      }
     </div>
-</ng-container>
+}

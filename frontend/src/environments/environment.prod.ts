@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  assets: '/static/assets'
-};
+    production: true,
+    assets: '/static/assets'
+}

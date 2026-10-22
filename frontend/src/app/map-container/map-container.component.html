@@ -3,6 +3,8 @@
 <da-map [data]="filteredData" #map (showPrevButton)="showPrevButton=$event" (showNextButton)="showNextButton=$event">
 </da-map>
 
-<da-filter-menu [dateRange]="[minYear, maxYear]" [showPrevButton]="showPrevButton" [showNextButton]="showNextButton"
+<da-filter-menu
+    [dateRange]="(minYear !== undefined && maxYear !== undefined) ? [minYear, maxYear] : undefined"
+    [showPrevButton]="showPrevButton" [showNextButton]="showNextButton"
     [aboveFooter]="true" (jump)="jump($event)" (filter)="setFilter($event)">
 </da-filter-menu>

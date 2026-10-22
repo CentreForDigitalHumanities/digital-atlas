@@ -15,15 +15,12 @@
         "test-front": "yarn front yarn test",
         "test-data": "cd data && pytest",
         "test": "yarn test-front && yarn test-data",
-        "start-front": "yarn fyarn stop && yarn front yarn serve",
+        "start-front": "yarn front yarn serve",
         "watch-test-front": "yarn front yarn test",
         "start": "yarn start-front",
         "build": "yarn front yarn build",
         "build-p": "yarn front yarn build --prod",
         "watch-front-p": "yarn front yarn watch",
         "start-p": "yarn build-p && yarn watch-front-p"
-    },
-    "devDependencies": {
-        "@angular/cli": ">=11 <12"
     }
 }

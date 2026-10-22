@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { TimelineComponent } from './timeline.component';
+import { DataService } from '../services/data.service';
+import { DataServiceMock } from '../services/data.service.mock';
 
 describe('TimelineComponent', () => {
     let component: TimelineComponent;
@@ -9,8 +11,10 @@ describe('TimelineComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TimelineComponent],
-            imports: [FontAwesomeModule]
+            imports: [TimelineComponent, FontAwesomeModule],
+            providers: [
+                { provide: DataService, useClass: DataServiceMock },
+            ]
         })
             .compileComponents();
     });
@@ -18,6 +22,8 @@ describe('TimelineComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TimelineComponent);
         component = fixture.componentInstance;
+        fixture.componentRef.setInput('authors', []);
+        fixture.componentRef.setInput('narrowCardColumn', false);
         fixture.detectChanges();
     });
 
