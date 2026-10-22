@@ -19,26 +19,35 @@ jobs:
 
     runs-on: ubuntu-24.04
 
-    strategy:
-      matrix:
-        python-version: ['3.12']
-        node-version: ['22.x']
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v6
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
       with:
-        python-version: ${{ matrix.python-version }}
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+        python-version: '3.12'
+        cache: 'pip'
+        cache-dependency-path: 'data/requirements.txt'
+    - name: Use Node.js 22
+      uses: actions/setup-node@v6
       with:
-        node-version: ${{ matrix.node-version }}
-    - name: Run all tests
+        node-version: 22
+        cache: npm
+        cache-dependency-path: 'frontend/yarn.lock'
+    - name: Install data
       run: |
-        yarn preinstall
-        yarn install-data
-        yarn fyarn
+        cd data
+        pip install -r requirements.txt
+    - name: Test data
+      run: |
+        cd data
+        pytest
+    - name: Install frontend
+      run: |
+        cd frontend
+        ./download-images.sh
         yarn
-        yarn build-p
+    - name: Test frontend
+      run: |
+        cd frontend
         chromedriver --version
-        yarn test
+        yarn test --no-watch --no-progress --browsers=ChromeHeadless
