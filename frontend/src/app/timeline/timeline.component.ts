@@ -185,9 +185,13 @@ export class TimelineComponent implements OnChanges {
     }
 
     getTimeDomain(events: TimelineEvent[]): [number, number] {
-        const minYear = _.min(events.map(event => event.startYear));
-        const maxYear = _.max(events.map(event => event.endYear));
+        const minYear = this.clampYear(_.min(events.map(event => event.startYear)));
+        const maxYear = this.clampYear(_.max(events.map(event => event.endYear)));
         return [minYear, maxYear];
+    }
+
+    private clampYear(value: number): number {
+        return Math.min(2022, Math.max(0, value));
     }
 
     setTimeRange(minYear?: number, maxYear?: number): number[] {
