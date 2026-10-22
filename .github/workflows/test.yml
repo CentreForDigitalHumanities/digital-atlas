@@ -46,6 +46,7 @@ jobs:
         cd frontend
         ./download-images.sh
         yarn
+        yarn build:colors
     - name: Test frontend
       run: |
         cd frontend
