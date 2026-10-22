@@ -50,4 +50,4 @@ jobs:
       run: |
         cd frontend
         chromedriver --version
-        yarn test --no-watch --no-progress --browsers=ChromeHeadless
+        yarn ng test
