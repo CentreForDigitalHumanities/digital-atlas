@@ -240,7 +240,7 @@ export class TimelineComponent implements OnChanges {
 
     private setEventIndices(): void {
         let index = 0;
-        _.range(this.minYear(), this.maxYear()).forEach(year =>
+        this.timeRange().forEach(year =>
             this.columns().forEach(column => {
                 const tile = column.find(t =>
                     t.event && (t.startYear === year || (year === this.minYear() && t.startYear === undefined))

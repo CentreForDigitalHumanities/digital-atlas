@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IntellectualComponent } from './intellectual.component';
+import { provideRouter } from '@angular/router';
+import { DataService } from '../services/data.service';
+import { DataServiceMock } from '../services/data.service.mock';
 
 describe('IntellectualComponent', () => {
     let component: IntellectualComponent;
@@ -7,7 +10,11 @@ describe('IntellectualComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [IntellectualComponent]
+            imports: [IntellectualComponent],
+            providers: [
+                provideRouter([]),
+                { provide: DataService, useClass: DataServiceMock },
+            ]
         })
             .compileComponents();
     });

@@ -40,7 +40,7 @@ export class IntellectualMenuComponent implements OnInit {
     constructor(private dataService: DataService, private visualService: VisualService, private route: ActivatedRoute) { }
 
     async ngOnInit(): Promise<void> {
-        this.context = this.route.snapshot.url[0].path;
+        this.context = this.route.snapshot.url[0]?.path;
         this.data = await this.dataService.getData();
         this.data.authors.forEach(author => this.authorSelections[author.id] = true);
         this.updateAuthorSelection();

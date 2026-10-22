@@ -6,13 +6,6 @@ describe('PinComponent', () => {
     let component: PinComponent;
     let fixture: ComponentFixture<PinComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [PinComponent]
-        })
-            .compileComponents();
-    });
-
     beforeEach(() => {
         fixture = TestBed.createComponent(PinComponent);
         component = fixture.componentInstance;

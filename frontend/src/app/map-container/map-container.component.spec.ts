@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapContainerComponent } from './map-container.component';
+import { DataService } from '../services/data.service';
+import { DataServiceMock } from '../services/data.service.mock';
+import { provideRouter } from '@angular/router';
 
 describe('MapContainerComponent', () => {
     let component: MapContainerComponent;
@@ -8,7 +11,11 @@ describe('MapContainerComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [MapContainerComponent]
+            imports: [MapContainerComponent],
+            providers: [
+                { provide: DataService, useClass: DataServiceMock },
+                provideRouter([]),
+            ]
         })
             .compileComponents();
     });

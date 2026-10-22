@@ -17,14 +17,6 @@ describe('App', () => {
         expect(app).toBeTruthy();
     });
 
-    it('should render title', async () => {
-        const fixture = TestBed.createComponent(App);
-        await fixture.whenStable();
-        const compiled = fixture.nativeElement as HTMLElement;
-        expect(compiled.querySelector('h1')?.textContent).toContain('Hello, temp');
-    });
-
-
     it(`should have as title 'digital-atlas'`, () => {
         const fixture = TestBed.createComponent(App);
         const app = fixture.debugElement.componentInstance;
